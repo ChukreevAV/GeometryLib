@@ -47,6 +47,9 @@ namespace GeometryLib
             Y = y;
         }
 
+        /// <summary>Расстояние между точками</summary>
+        /// <param name="p"></param>
+        /// <returns></returns>
         public double Distance(Point2d p)
             => Math.Sqrt(Math.Pow(X - p.X, 2) + Math.Pow(Y - p.Y, 2));
 
@@ -62,6 +65,7 @@ namespace GeometryLib
             return tp.X > X ? -1 : 1;
         }
 
+        /// <inheritdoc/>
         public override string ToString()
         {
             return X.ToString(CultureInfo.InvariantCulture) + " " +
