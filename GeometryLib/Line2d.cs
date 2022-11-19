@@ -18,29 +18,27 @@
             End = end;
         }
 
-        /// <summary></summary>
+        /// <summary>Длина отрезка</summary>
         public double Length => Start.Distance(End);
 
-        /// <summary></summary>
+        /// <summary>Параметр A в уравнении Ax+By+C=0</summary>
         public double A => Start.Y - End.Y;
 
-        /// <summary></summary>
+        /// <summary>Параметр B в уравнении Ax+By+C=0</summary>
         public double B => End.X - Start.X;
 
-        /// <summary></summary>
+        /// <summary>Параметр C в уравнении Ax+By+C=0</summary>
         public double C => Start.X * End.Y - End.X * Start.Y;
 
-        /// <summary></summary>
+        /// <summary>Разница X-координаты начала и конца отрезка</summary>
         private double Dx => Start.X - End.X;
 
-        /// <summary></summary>
+        /// <summary>Разница Y-координаты начала и конца отрезка</summary>
         private double Dy => Start.Y - End.Y;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="p"></param>
-        /// <returns></returns>
+        /// <summary>Расстояние от прямой до точки</summary>
+        /// <param name="p">точка до которой определяется расстояние</param>
+        /// <returns>Длина нормали от точки до прямой</returns>
         public double Distance(Point2d p)
         {
             var a = A;
@@ -53,17 +51,7 @@
         /// <returns></returns>
         public Vector2d Direction() => (End - Start) / Length;
 
-        /// <summary>Получаем упорядоченные координаты</summary>
-        /// <param name="test">Отрезок</param>
-        /// <returns>Координаты упорядоченные слева на право</returns>
-        private static (double x1, double y1, double x2, double y2) Order(Line2d test)
-        {
-            return test.Start.X > test.End.X
-                ? new(test.End.X, test.End.Y, test.Start.X, test.Start.Y)
-                : new(test.Start.X, test.Start.Y, test.End.X, test.End.Y);
-        }
-
-        private static readonly double _epsilon = 0.01;
+        private static readonly double Epsilon = 0.01;
 
         /// <summary>Проверяем принадлежность точки отрезку</summary>
         /// <param name="test">Отрезок</param>
@@ -71,17 +59,17 @@
         /// <returns></returns>
         private static bool LinePointTest(Line2d test, Point2d p)
         {
-            if (p.Distance(test.Start) < _epsilon) return true;
-            if (p.Distance(test.End) < _epsilon) return true;
+            if (p.Distance(test.Start) < Epsilon) return true;
+            if (p.Distance(test.End) < Epsilon) return true;
 
-            var b1 = p.X >= test.Start.X - _epsilon 
-                     && p.X <= test.End.X + _epsilon;
-            var b2 = p.X <= test.Start.X + _epsilon 
-                     && p.X >= test.End.X - _epsilon;
-            var b3 = p.Y >= test.Start.Y - _epsilon 
-                     && p.Y <= test.End.Y + _epsilon;
-            var b4 = p.Y <= test.Start.Y + _epsilon 
-                     && p.Y >= test.End.Y - _epsilon;
+            var b1 = p.X >= test.Start.X - Epsilon 
+                     && p.X <= test.End.X + Epsilon;
+            var b2 = p.X <= test.Start.X + Epsilon 
+                     && p.X >= test.End.X - Epsilon;
+            var b3 = p.Y >= test.Start.Y - Epsilon 
+                     && p.Y <= test.End.Y + Epsilon;
+            var b4 = p.Y <= test.Start.Y + Epsilon 
+                     && p.Y >= test.End.Y - Epsilon;
             return (b1 || b2) && (b3 || b4);
         }
 
