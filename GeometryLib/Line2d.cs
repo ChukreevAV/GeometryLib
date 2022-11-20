@@ -77,7 +77,7 @@
         /// <returns></returns>
         public Vector2d Direction() => (End - Start) / Length;
 
-        private static readonly double Epsilon = 0.01;
+
 
         /// <summary>Проверяем принадлежность точки отрезку</summary>
         /// <param name="test">Отрезок</param>
@@ -85,17 +85,17 @@
         /// <returns></returns>
         private static bool LinePointTest(Line2d test, Point2d p)
         {
-            if (p.Distance(test.Start) < Epsilon) return true;
-            if (p.Distance(test.End) < Epsilon) return true;
+            if (p.Distance(test.Start) < Point2d.Epsilon) return true;
+            if (p.Distance(test.End) < Point2d.Epsilon) return true;
 
-            var b1 = p.X >= test.Start.X - Epsilon 
-                     && p.X <= test.End.X + Epsilon;
-            var b2 = p.X <= test.Start.X + Epsilon 
-                     && p.X >= test.End.X - Epsilon;
-            var b3 = p.Y >= test.Start.Y - Epsilon 
-                     && p.Y <= test.End.Y + Epsilon;
-            var b4 = p.Y <= test.Start.Y + Epsilon 
-                     && p.Y >= test.End.Y - Epsilon;
+            var b1 = p.X >= test.Start.X - Point2d.Epsilon 
+                     && p.X <= test.End.X + Point2d.Epsilon;
+            var b2 = p.X <= test.Start.X + Point2d.Epsilon 
+                     && p.X >= test.End.X - Point2d.Epsilon;
+            var b3 = p.Y >= test.Start.Y - Point2d.Epsilon 
+                     && p.Y <= test.End.Y + Point2d.Epsilon;
+            var b4 = p.Y <= test.Start.Y + Point2d.Epsilon 
+                     && p.Y >= test.End.Y - Point2d.Epsilon;
             return (b1 || b2) && (b3 || b4);
         }
 

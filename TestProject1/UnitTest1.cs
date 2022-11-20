@@ -187,6 +187,31 @@ namespace TestProject1
                 if (root == null) root = new BstNode<Point2d>(p, p);
                 else root.Add(p, p);
             }
+
+            var p1 = list1[5];
+
+            var t1 = root.Find(p1);
+
+            root.Remove(p1);
+        }
+
+        [TestMethod] public void TestMethod9()
+        {
+            var list1 = GetRandomPoint2ds(19);
+            var bst = new BinarySearchTree<Point2d>();
+
+            foreach (var p in list1)
+            {
+                bst.Add(p, p);
+            }
+
+            var left = bst.GetLeft();
+            var right = bst.GetRight();
+
+            foreach (var p in list1)
+            {
+                bst.Remove(p);
+            }
         }
     }
 }

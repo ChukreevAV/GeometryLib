@@ -5,6 +5,8 @@ namespace GeometryLib
     /// <summary>Точка на плоскости</summary>
     public class Point2d : IComparable
     {
+        public static readonly double Epsilon = 0.01;
+
         private bool TestDoubleValue(double d)
         {
             if (!double.IsFinite(d))
@@ -52,6 +54,21 @@ namespace GeometryLib
         /// <returns></returns>
         public double Distance(Point2d p)
             => Math.Sqrt(Math.Pow(X - p.X, 2) + Math.Pow(Y - p.Y, 2));
+
+        public override int GetHashCode()
+        {
+            return X.GetHashCode() + Y.GetHashCode();
+        }
+
+        public override bool Equals(object? obj)
+        {
+            if (obj is Point2d tp)
+            {
+                return Distance(tp) < Epsilon;
+            }
+
+            return false;
+        }
 
         public int CompareTo(object? obj)
         {
