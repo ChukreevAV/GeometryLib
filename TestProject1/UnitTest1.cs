@@ -1,5 +1,9 @@
 using GeometryLib;
 
+using System.Globalization;
+using System.Text;
+using System.Text.RegularExpressions;
+
 namespace TestProject1
 {
     [TestClass] public class UnitTest1
@@ -83,6 +87,7 @@ namespace TestProject1
             var line1 = GetLine1();
             var line2 = GetLine2();
             var ip1 = line1.Intersect(line2);
+            Assert.IsNotNull(ip1);
         }
 
         [TestMethod] public void TestMethod3()
@@ -90,6 +95,98 @@ namespace TestProject1
             Assert.IsFalse(double.IsFinite(double.PositiveInfinity));
             Assert.IsFalse(double.IsFinite(double.NegativeInfinity));
             Assert.IsFalse(double.IsFinite(double.NaN));
+        }
+
+        [TestMethod] public void TestMethod4()
+        {
+            var list1 = GetRandomPoint2ds(20);
+            var lines = new List<Line2d>();
+            for (var i = 0; i < 10; i+=2)
+            {
+                lines.Add(new Line2d(list1[i], list1[i + 1]));
+            }
+
+            var sb = new StringBuilder();
+
+            foreach (var l in lines)
+            {
+                sb.AppendLine(l.ToString());
+            }
+            File.WriteAllText(@"F:\work\lines1.txt", sb.ToString());
+
+            var scr = new AutoCadScript();
+            scr.AddLines(lines);
+            scr.WriteFile(@"F:\work\lines1.scr");
+        }
+
+        private static readonly string Pattern = "(?<x1>\\d+\\.\\d+) (?<y1>\\d+\\.\\d+);(?<x2>\\d+\\.\\d+) (?<y2>\\d+\\.\\d+)";
+        private static Regex regexLine = new (Pattern);
+
+        public Line2d? ParseLine(string text)
+        {
+            if (!regexLine.IsMatch(text)) return null;
+            var m = regexLine.Match(text);
+            var x1 = double.Parse(m.Groups["x1"].Value, CultureInfo.InvariantCulture);
+            var y1 = double.Parse(m.Groups["y1"].Value, CultureInfo.InvariantCulture);
+            var x2 = double.Parse(m.Groups["x2"].Value, CultureInfo.InvariantCulture);
+            var y2 = double.Parse(m.Groups["y2"].Value, CultureInfo.InvariantCulture);
+            return new Line2d(x1, y1, x2, y2);
+        }
+
+        [TestMethod] public void TestMethod5()
+        {
+            var test1 = "0.6012846366974559 0.9414754366938098;0.8479698078839378 0.3919478387540417";
+            var pattern = "(?<x1>\\d+\\.\\d+) (?<y1>\\d+\\.\\d+);(?<x2>\\d+\\.\\d+) (?<y2>\\d+\\.\\d+)";
+            var reg1 = new Regex(pattern);
+
+            if (reg1.IsMatch(test1)) 
+            {
+                var m = reg1.Match(test1);
+                var x1 = double.Parse(m.Groups["x1"].Value, CultureInfo.InvariantCulture);
+                var y1 = double.Parse(m.Groups["y1"].Value, CultureInfo.InvariantCulture);
+                var x2 = double.Parse(m.Groups["x2"].Value, CultureInfo.InvariantCulture);
+                var y2 = double.Parse(m.Groups["y2"].Value, CultureInfo.InvariantCulture);
+            }
+        }
+
+        [TestMethod] public void TestMethod6()
+        {
+            var strings = File.ReadAllLines(@"F:\work\lines1.txt");
+            var lines = new List<Line2d>();
+            var root = new StateNode();
+            foreach (var str in strings)
+            {
+                var line = ParseLine(str);
+                if (line != null)
+                {
+                    lines.Add(line);
+                    root.AddLine(line);
+                }
+            }
+        }
+
+        [TestMethod] public void TestMethod7()
+        {
+            var p1 = new Point2d(10, 10);
+            var p2 = new Point2d(10, 100);
+            var p3 = new Point2d(11, 10);
+
+            var b1 = p1 < p3;
+            var b2 = p1 < p2;
+            var b3 = p1 > p3;
+            var b4 = p1 > p2;
+        }
+
+        [TestMethod] public void TestMethod8()
+        {
+            var list1 = GetRandomPoint2ds(9);
+            BstNode<Point2d>? root = null;
+
+            foreach (var p in list1)
+            {
+                if (root == null) root = new BstNode<Point2d>(p, p);
+                else root.Add(p, p);
+            }
         }
     }
 }

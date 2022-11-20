@@ -77,5 +77,11 @@ namespace GeometryLib
 
         public static Vector2d operator -(Point2d a, Point2d b)
             => new(a.X - b.X, a.Y - b.Y);
+
+        public static bool operator >(Point2d a, Point2d b) 
+            => a.Y == b.Y ? a.X < b.X : a.Y < b.Y;
+
+        public static bool operator <(Point2d a, Point2d b) 
+            => a.Y == b.Y ? a.X > b.X : a.Y > b.Y;
     }
 }

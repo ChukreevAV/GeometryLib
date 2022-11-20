@@ -9,6 +9,12 @@
         /// <summary>Конечная точка</summary>
         public Point2d End { get; set; }
 
+        public Line2d(double x1, double y1, double x2, double y2)
+        {
+            Start = new Point2d(x1, y1);
+            End = new Point2d(x2, y2);
+        }
+
         /// <summary>Конструктор</summary>
         /// <param name="start">Начальная точка</param>
         /// <param name="end">Конечная точка</param>
@@ -21,8 +27,28 @@
         /// <summary>Длина отрезка</summary>
         public double Length => Start.Distance(End);
 
-        /// <summary>Параметр A в уравнении Ax+By+C=0</summary>
-        public double A => Start.Y - End.Y;
+        public Point2d First()
+        {
+            if (Start.Y == End.Y)
+            {
+                return Start.X < End.X ? Start : End;
+            }
+
+            return Start.Y < End.Y ? Start : End;
+        }
+
+        public Point2d Last()
+        {
+            if (Start.Y == End.Y)
+            {
+                return Start.X > End.X ? Start : End;
+            }
+
+            return Start.Y > End.Y ? Start : End;
+        }
+
+       /// <summary>Параметр A в уравнении Ax+By+C=0</summary>
+       public double A => Start.Y - End.Y;
 
         /// <summary>Параметр B в уравнении Ax+By+C=0</summary>
         public double B => End.X - Start.X;
@@ -89,6 +115,6 @@
         }
 
         /// <inheritdoc/>
-        public override string ToString() => $"sp:{Start}; ep:{End}";
+        public override string ToString() => $"{Start};{End}";
     }
 }
