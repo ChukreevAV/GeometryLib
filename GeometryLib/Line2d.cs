@@ -1,4 +1,6 @@
-﻿namespace GeometryLib
+﻿using static System.Net.Mime.MediaTypeNames;
+
+namespace GeometryLib
 {
     /// <summary>Отрезок</summary>
     public class Line2d
@@ -47,8 +49,8 @@
             return Start.Y > End.Y ? Start : End;
         }
 
-       /// <summary>Параметр A в уравнении Ax+By+C=0</summary>
-       public double A => Start.Y - End.Y;
+        /// <summary>Параметр A в уравнении Ax+By+C=0</summary>
+        public double A => Start.Y - End.Y;
 
         /// <summary>Параметр B в уравнении Ax+By+C=0</summary>
         public double B => End.X - Start.X;
@@ -77,7 +79,14 @@
         /// <returns></returns>
         public Vector2d Direction() => (End - Start) / Length;
 
+        public bool Contain(Point2d p) => LinePointTest(this, p);
 
+        public bool IsCenter(Point2d p)
+        {
+            if (p.Distance(Start) < Point2d.Epsilon) return false;
+            if (p.Distance(End) < Point2d.Epsilon) return false;
+            return LinePointTest(this, p);
+        }
 
         /// <summary>Проверяем принадлежность точки отрезку</summary>
         /// <param name="test">Отрезок</param>
@@ -88,13 +97,13 @@
             if (p.Distance(test.Start) < Point2d.Epsilon) return true;
             if (p.Distance(test.End) < Point2d.Epsilon) return true;
 
-            var b1 = p.X >= test.Start.X - Point2d.Epsilon 
+            var b1 = p.X >= test.Start.X - Point2d.Epsilon
                      && p.X <= test.End.X + Point2d.Epsilon;
-            var b2 = p.X <= test.Start.X + Point2d.Epsilon 
+            var b2 = p.X <= test.Start.X + Point2d.Epsilon
                      && p.X >= test.End.X - Point2d.Epsilon;
-            var b3 = p.Y >= test.Start.Y - Point2d.Epsilon 
+            var b3 = p.Y >= test.Start.Y - Point2d.Epsilon
                      && p.Y <= test.End.Y + Point2d.Epsilon;
-            var b4 = p.Y <= test.Start.Y + Point2d.Epsilon 
+            var b4 = p.Y <= test.Start.Y + Point2d.Epsilon
                      && p.Y >= test.End.Y - Point2d.Epsilon;
             return (b1 || b2) && (b3 || b4);
         }
@@ -104,7 +113,7 @@
         /// <returns>Точка пересечения</returns>
         public Point2d? Intersect(Line2d test)
         {
-            var desc = Dx * test.Dy -Dy * test.Dx;
+            var desc = Dx * test.Dy - Dy * test.Dx;
             var x = (C * test.Dx - Dx * test.C) / desc;
             var y = (C * test.Dy - Dy * test.C) / desc;
 

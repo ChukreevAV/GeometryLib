@@ -97,11 +97,11 @@ namespace TestProject1
             Assert.IsFalse(double.IsFinite(double.NaN));
         }
 
-        [TestMethod] public void TestMethod4()
+        [TestMethod] public void TestCreateLines()
         {
-            var list1 = GetRandomPoint2ds(20);
+            var list1 = GetRandomPoint2ds(200);
             var lines = new List<Line2d>();
-            for (var i = 0; i < 10; i+=2)
+            for (var i = 0; i < 100; i+=2)
             {
                 lines.Add(new Line2d(list1[i], list1[i + 1]));
             }
@@ -112,11 +112,11 @@ namespace TestProject1
             {
                 sb.AppendLine(l.ToString());
             }
-            File.WriteAllText(@"F:\work\lines1.txt", sb.ToString());
+            File.WriteAllText(@"F:\work\lines2.txt", sb.ToString());
 
             var scr = new AutoCadScript();
             scr.AddLines(lines);
-            scr.WriteFile(@"F:\work\lines1.scr");
+            scr.WriteFile(@"F:\work\lines2.scr");
         }
 
         private static readonly string Pattern = "(?<x1>\\d+\\.\\d+) (?<y1>\\d+\\.\\d+);(?<x2>\\d+\\.\\d+) (?<y2>\\d+\\.\\d+)";
@@ -149,6 +149,18 @@ namespace TestProject1
             }
         }
 
+        public List<Line2d> ReadLines(string path)
+        {
+            var strings = File.ReadAllLines(path);
+            var list = new List<Line2d>();
+            foreach (var line in strings.Select(ParseLine))
+            {
+                if (line != null) list.Add(line);
+            }
+
+            return list;
+        }
+
         [TestMethod] public void TestMethod6()
         {
             var strings = File.ReadAllLines(@"F:\work\lines1.txt");
@@ -160,7 +172,7 @@ namespace TestProject1
                 if (line != null)
                 {
                     lines.Add(line);
-                    root.AddLine(line);
+                    root.Add(line);
                 }
             }
         }
@@ -211,6 +223,21 @@ namespace TestProject1
             foreach (var p in list1)
             {
                 bst.Remove(p);
+            }
+        }
+
+        [TestMethod] public void TestStateNodeRemove()
+        {
+            var lines = ReadLines(@"F:\work\lines2.txt");
+            var tree = new StateNode();
+            foreach (var line in lines)
+            {
+                tree.Add(line);
+            }
+
+            foreach (var line in lines)
+            {
+                tree.Remove(line);
             }
         }
     }

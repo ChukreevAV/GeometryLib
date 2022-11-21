@@ -16,6 +16,8 @@
 
         public BstNode<T>? GetRight() => Root?.GetRight();
 
+        public bool IsEmpty() => Root == null;
+
         public void Remove(Point2d k)
         {
             if (Root?.Remove(k) == true) Root = null;

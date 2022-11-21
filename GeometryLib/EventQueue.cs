@@ -14,7 +14,22 @@
             }
             else
             {
-                even.Lines.Add(line);
+                even.Add(line);
+            }
+        }
+
+        public void AddEvent(Point2d p, Line2d line1, Line2d line2)
+        {
+            var even = Tree.Find(p);
+            if (even == null)
+            {
+                even = new SweepEvent(p, line1, line2);
+                Tree.Add(p, even);
+            }
+            else
+            {
+                even.Add(line1);
+                even.Add(line2);
             }
         }
 
@@ -35,5 +50,7 @@
             Tree.Remove(nn.Key);
             return nn.Value;
         }
+
+        public bool IsEmpty() => Tree.IsEmpty();
     }
 }
