@@ -1,6 +1,6 @@
 ﻿using GeometryLib.Geometry;
 
-namespace GeometryLib
+namespace GeometryLib.Intersections
 {
     public class IntersectionsMethods
     {
@@ -14,9 +14,9 @@ namespace GeometryLib
 
         public static PointPosition GetPointPosition(Line2d line, Point2d p)
         {
-            if (p.Distance(line.First()) < Point2d.Epsilon) 
+            if (p.Distance(line.First()) < Point2d.Epsilon)
                 return PointPosition.Up;
-            if (p.Distance(line.Last()) < Point2d.Epsilon) 
+            if (p.Distance(line.Last()) < Point2d.Epsilon)
                 return PointPosition.Down;
             if (line.IsCenter(p)) return PointPosition.Center;
             return PointPosition.None;
@@ -30,7 +30,7 @@ namespace GeometryLib
         {
             if (sl == null || sr == null) return;
             var ip = sl.Intersect(sr);
-            if (ip != null && ip.Y > p.Y) 
+            if (ip != null && ip.Y > p.Y)
                 _eventQueue.AddEvent(ip, sl, sr);
         }
 
@@ -42,7 +42,7 @@ namespace GeometryLib
             //var groups = lines.GroupBy(l => GetPointPosition(l, ev.Point));
 
             var cList = lines
-                .Where(l 
+                .Where(l
                     => GetPointPosition(l, ev.Point) == PointPosition.Center)
                 .ToList();
 
@@ -70,12 +70,12 @@ namespace GeometryLib
 
                 var left = list1.First();
                 var right = _t.FindRight(left);
-                if (right != null) 
+                if (right != null)
                     FindNewEvent(left, right, ev.Point);
 
                 right = list1.Last();
                 left = _t.FindLeft(right);
-                if (left != null) 
+                if (left != null)
                     FindNewEvent(left, right, ev.Point);
             }
         }

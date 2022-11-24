@@ -1,6 +1,6 @@
 ﻿using GeometryLib.Geometry;
 
-namespace GeometryLib
+namespace GeometryLib.Intersections
 {
     public class EventQueue
     {

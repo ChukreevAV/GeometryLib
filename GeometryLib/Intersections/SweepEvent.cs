@@ -1,6 +1,6 @@
 ﻿using GeometryLib.Geometry;
 
-namespace GeometryLib
+namespace GeometryLib.Intersections
 {
     public class SweepEvent
     {
@@ -18,7 +18,7 @@ namespace GeometryLib
             Point = p;
             Lines.Add(line);
         }
-        
+
         public SweepEvent(Point2d p, Line2d line1, Line2d line2)
         {
             Point = p;
@@ -34,7 +34,7 @@ namespace GeometryLib
 
         public void Add(Line2d line)
         {
-              if (!Lines.Contains(line)) Lines.Add(line);
+            if (!Lines.Contains(line)) Lines.Add(line);
         }
     }
 }

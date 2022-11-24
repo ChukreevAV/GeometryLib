@@ -1,5 +1,6 @@
 using GeometryLib;
 using GeometryLib.Geometry;
+using GeometryLib.Intersections;
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;

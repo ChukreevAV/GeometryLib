@@ -1,5 +1,5 @@
-﻿using GeometryLib;
-using GeometryLib.Geometry;
+﻿using GeometryLib.Geometry;
+using GeometryLib.Intersections;
 using System;
 using System.Collections.Generic;
 using System.Globalization;

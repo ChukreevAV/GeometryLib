@@ -1,6 +1,6 @@
 ﻿using GeometryLib.Geometry;
 
-namespace GeometryLib
+namespace GeometryLib.Intersections
 {
     public class StateNode
     {
@@ -16,7 +16,7 @@ namespace GeometryLib
 
         public StateNode? RightNode { get; set; }
 
-        public StateNode() {}
+        public StateNode() { }
 
         public StateNode(StateNode parent, Line2d line)
         {
@@ -41,7 +41,7 @@ namespace GeometryLib
                 RightLine = line1;
             }
         }
-        
+
         public List<Line2d> Find(Point2d p)
         {
             var rList = new List<Line2d>();
@@ -139,7 +139,7 @@ namespace GeometryLib
             if (Line == null) return false; //!!!
 
             var tp = Line.First();
-            return (tp.Y < p.Y);
+            return tp.Y < p.Y;
         }
 
         public bool IsRight(Line2d left, Line2d test)
@@ -147,7 +147,7 @@ namespace GeometryLib
             var f1 = left.First();
             var f2 = test.First();
 
-            return (f1.Y < f2.Y);
+            return f1.Y < f2.Y;
         }
 
         public Line2d? GetLeft() => LeftLine ?? LeftNode?.GetLeft();
@@ -182,7 +182,7 @@ namespace GeometryLib
                 if (RightLine == null) RightLine = line;
                 else
                 {
-                    RightNode = 
+                    RightNode =
                         new StateNode(this, RightLine, line);
                     RightLine = null;
                 }
@@ -195,7 +195,7 @@ namespace GeometryLib
                 if (LeftLine == null) LeftLine = line;
                 else
                 {
-                    LeftNode = 
+                    LeftNode =
                         new StateNode(this, LeftLine, line);
                     LeftLine = null;
                 }
