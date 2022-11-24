@@ -67,12 +67,12 @@
                 list1 = list1.OrderBy(l => l.First().Y).ToList();
 
                 var left = list1.First();
-                var right = _t.FindRight(left.First());
+                var right = _t.FindRight(left);
                 if (right != null) 
                     FindNewEvent(left, right, ev.Point);
 
                 right = list1.Last();
-                left = _t.FindLeft(right.First());
+                left = _t.FindLeft(right);
                 if (left != null) 
                     FindNewEvent(left, right, ev.Point);
             }

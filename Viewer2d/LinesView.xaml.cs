@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
@@ -41,20 +42,31 @@ namespace Viewer2d
             return list;
         }
 
+        private double _scale1 = 400;
+
         public void DrawLine(Line2d line2d, Brush brush)
         {
-            var scale1 = 400;
-
             var line1 = new Line
             {
-                X1 = line2d.Start.X * scale1,
-                Y1 = line2d.Start.Y * scale1,
-                X2 = line2d.End.X * scale1,
-                Y2 = line2d.End.Y * scale1,
+                X1 = line2d.Start.X * _scale1,
+                Y1 = line2d.Start.Y * _scale1,
+                X2 = line2d.End.X * _scale1,
+                Y2 = line2d.End.Y * _scale1,
                 Stroke = brush,
                 StrokeThickness = 1
             };
             WorkCanvas.Children.Add(line1);
+        }
+
+        public void DrawPoint(Point2d center, Brush brush)
+        {
+            var ellipse = new Ellipse();
+            ellipse.Fill = brush;
+            var size = 12;
+            ellipse.Height = size;
+            ellipse.Width = size;
+            ellipse.Margin = new Thickness(center.X * _scale1 - size / 2, center.Y * _scale1 - size / 2, 0, 0);
+            WorkCanvas.Children.Add(ellipse);
         }
 
         private void SetTimer()
@@ -94,11 +106,17 @@ namespace Viewer2d
 
             //SetTimer();
 
-            WorkCanvas.Children.Clear();
-
             foreach (var line in _lines)
             {
                 DrawLine(line, Brushes.Green);
+            }
+
+            var i = new IntersectionsMethods();
+            var r = i.FindIntersections(_lines);
+
+            foreach (var ev in r)
+            {
+                DrawPoint(ev.Point, Brushes.Red);
             }
         }
 
