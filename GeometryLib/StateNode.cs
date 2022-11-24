@@ -61,13 +61,20 @@
             return _parent?.GetParentLeft(this);
         }
 
+        private Line2d? GetParentRight(StateNode child)
+        {
+            if (LeftNode == child) return RightLine ?? RightNode?.GetLeft();
+
+            return _parent?.GetParentRight(this);
+        }
+
         public Line2d? FindLeft(Line2d l)
         {
             var p = l.First();
 
             if (IsRight(p))
             {
-                if (RightNode != null) return FindLeft(l);
+                if (RightNode != null) return RightNode.FindLeft(l);
                 if (RightLine == l)
                 {
                     return LeftNode != null ? LeftNode.GetRight() : LeftLine;
@@ -76,9 +83,27 @@
             else
             {
                 if (LeftNode != null) return LeftNode.FindLeft(l);
+                if (LeftLine == l) return _parent?.GetParentLeft(this);
+            }
+
+            return null;
+        }
+
+        public Line2d? FindRight(Line2d l)
+        {
+            var p = l.First();
+
+            if (IsRight(p))
+            {
+                if (RightNode != null) return RightNode.FindRight(l);
+                if (RightLine == l) return _parent?.GetParentRight(this);
+            }
+            else
+            {
+                if (LeftNode != null) return LeftNode.FindRight(l);
                 if (LeftLine == l)
                 {
-                    return GetParentLeft(this);
+                    return RightNode != null ? RightNode.GetLeft() : RightLine;
                 }
             }
 
@@ -122,6 +147,8 @@
 
             return (f1.Y < f2.Y);
         }
+
+        public Line2d? GetLeft() => LeftLine ?? LeftNode?.GetLeft();
 
         public Line2d? GetRight() => RightLine ?? RightNode?.GetRight();
 

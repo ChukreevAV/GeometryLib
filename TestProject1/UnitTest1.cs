@@ -269,7 +269,21 @@ namespace TestProject1
             Assert.IsNotNull(left, "left");
             Assert.IsNotNull(right, "right");
 
-            var line1 = lines[0];
+            var line1 = lines[1];
+            var leftLine = tree.FindLeft(line1);
+        }
+
+        [TestMethod]
+        public void TestStateNodeFind2()
+        {
+            var lines = ReadLines(@"F:\work\lines1.txt");
+            var tree = new StateNode();
+            foreach (var line in lines)
+            {
+                tree.Add(line);
+            }
+
+            var line1 = lines[1];
             var leftLine = tree.FindLeft(line1);
         }
 

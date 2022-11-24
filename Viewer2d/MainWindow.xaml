@@ -7,8 +7,6 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800" Closed="Window_Closed">
     <Grid>
-        <Canvas x:Name="WorkCanvas">
-
-        </Canvas>
+        <Canvas x:Name="WorkCanvas" />
     </Grid>
 </Window>
