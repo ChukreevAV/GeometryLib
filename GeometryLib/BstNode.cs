@@ -2,22 +2,34 @@
 
 namespace GeometryLib
 {
+    /// <summary>Узел дерева <see cref="BinarySearchTree{T}"/></summary>
+    /// <typeparam name="T"></typeparam>
     public class BstNode<T> where T : class
     {
+        /// <summary>Ключ</summary>
         public Point2d Key { get; private set; }
 
+        /// <summary>Элемент данных</summary>
         public T Value { get; private set; }
 
+        /// <summary>Левый потомок</summary>
         public BstNode<T>? Left { get; set; }
 
+        /// <summary>Правый потомок</summary>
         public BstNode<T>? Right { get; set; }
 
+        /// <summary>Конструктор</summary>
+        /// <param name="k">Ключ</param>
+        /// <param name="v">Элемент данных</param>
         public BstNode(Point2d k, T v)
         {
             Key = k;
             Value = v;
         }
 
+        /// <summary>Добавить потомка</summary>
+        /// <param name="k">Ключ</param>
+        /// <param name="v">Элемент данных</param>
         public void Add(Point2d k, T v)
         {
             if (k > Key)
@@ -32,6 +44,9 @@ namespace GeometryLib
             }
         }
 
+        /// <summary>Поиск по ключу</summary>
+        /// <param name="k">Ключ</param>
+        /// <returns>Элемент данных</returns>
         public T? Find(Point2d k)
         {
             if (Key.Equals(k)) return Value;
@@ -39,30 +54,27 @@ namespace GeometryLib
             return Left?.Find(k) ?? default;
         }
 
+        /// <summary>Получить крайний левый узел</summary>
+        /// <returns></returns>
         public BstNode<T> GetLeft() => Left == null ? this : Left.GetLeft();
 
-        public BstNode<T> GetRight()
-        {
-            if (Right == null)
-            {
-                //return Left != null ? this.Left.GetRight() : this;
-                return this;
-            }
-            else
-                return Right.GetRight();
-        }
+        /// <summary>Получить крайний правый узел</summary>
+        /// <returns></returns>
+        public BstNode<T> GetRight() => Right == null ? this : Right.GetRight();
 
+        /// <summary>Удалить узел по ключу</summary>
+        /// <param name="k">Ключ</param>
+        /// <returns>Признак пустого узла</returns>
+        /// <exception cref="Exception"></exception>
         public bool Remove(Point2d k)
         {
             if (k > Key)
             {
-                var b1 = Right?.Remove(k);
-                if (b1 == true) Right = null;
+                if (Right?.Remove(k) == true) Right = null;
             }
             else if (k < Key)
             {
-                var b2 = Left?.Remove(k);
-                if (b2 == true) Left = null;
+                if (Left?.Remove(k) == true) Left = null;
             }
             else if (k.Equals(Key))
             {

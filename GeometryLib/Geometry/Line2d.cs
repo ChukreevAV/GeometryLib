@@ -27,6 +27,8 @@
         /// <summary>Длина отрезка</summary>
         public double Length => Start.Distance(End);
 
+        /// <summary>"Первая" точка</summary>
+        /// <returns></returns>
         public Point2d First()
         {
             if (Start.Y == End.Y)
@@ -37,6 +39,8 @@
             return Start.Y < End.Y ? Start : End;
         }
 
+        /// <summary>"Последняя" точка</summary>
+        /// <returns></returns>
         public Point2d Last()
         {
             if (Start.Y == End.Y)
@@ -77,8 +81,14 @@
         /// <returns></returns>
         public Vector2d Direction() => (End - Start) / Length;
 
+        /// <summary>Точка "принадлежит" отрезку</summary>
+        /// <param name="p"></param>
+        /// <returns></returns>
         public bool Contain(Point2d p) => LinePointTest(this, p);
 
+        /// <summary>Точка "внутри" отрезка</summary>
+        /// <param name="p"></param>
+        /// <returns></returns>
         public bool IsCenter(Point2d p)
         {
             if (p.Distance(Start) < Point2d.Epsilon) return false;
@@ -114,6 +124,8 @@
             var desc = Dx * test.Dy - Dy * test.Dx;
             var x = (C * test.Dx - Dx * test.C) / desc;
             var y = (C * test.Dy - Dy * test.C) / desc;
+
+            if (!double.IsFinite(x) || !double.IsFinite(x)) return null;  
 
             var res = new Point2d(x, y);
             var t1 = LinePointTest(this, res);

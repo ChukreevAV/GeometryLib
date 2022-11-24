@@ -8,7 +8,10 @@ namespace TestProject1
 {
     [TestClass] public class UnitTest1
     {
-        public List<Point2d> GetRandomPoint2ds(int count)
+        /// <summary>Создаём список случайных точек в квадрате 0-1</summary>
+        /// <param name="count">Количество точек</param>
+        /// <returns>Список точек в 0-1</returns>
+        public static List<Point2d> GetRandomPoint2ds(int count)
         {
             var random = new Random();
             var list1 = new List<Point2d>();
@@ -23,7 +26,7 @@ namespace TestProject1
             return list1;
         }
 
-        [TestMethod] public void TestSlowConvexHull()
+        [TestCategory("ConvexHull"), TestMethod] public void TestSlowConvexHull()
         {
             var list1 = GetRandomPoint2ds(33);
             Assert.IsTrue(list1.Count == 33, "Get Points");
@@ -37,7 +40,7 @@ namespace TestProject1
             scr.WriteFile(@"F:\work\TestSlowConvexHull.scr");
         }
 
-        [TestMethod] public void TestConvexHull()
+        [TestCategory("ConvexHull"), TestMethod] public void TestConvexHull()
         {
             var list1 = GetRandomPoint2ds(33);
             Assert.IsTrue(list1.Count == 33, "Get Points");
@@ -51,7 +54,7 @@ namespace TestProject1
             scr.WriteFile(@"F:\work\TestConvexHull.scr");
         }
 
-        [TestMethod] public void TestMethod1()
+        [TestCategory("Geometry"), TestMethod] public void TestIntersect1()
         {
             var sp1 = new Point2d(-1, 0);
             var ep1 = new Point2d(1, 0);
@@ -82,7 +85,7 @@ namespace TestProject1
             return new Line2d(p2, p1);
         }
 
-        [TestMethod] public void TestMethod2()
+        [TestCategory("Geometry"), TestMethod] public void TestIntersect2()
         {
             var line1 = GetLine1();
             var line2 = GetLine2();
@@ -90,14 +93,14 @@ namespace TestProject1
             Assert.IsNotNull(ip1);
         }
 
-        [TestMethod] public void TestMethod3()
+        [TestMethod] public void TestDoubleIsFinite()
         {
             Assert.IsFalse(double.IsFinite(double.PositiveInfinity));
             Assert.IsFalse(double.IsFinite(double.NegativeInfinity));
             Assert.IsFalse(double.IsFinite(double.NaN));
         }
 
-        [TestMethod] public void TestCreateLines()
+        [TestCategory("Geometry"), TestMethod] public void TestCreateLines()
         {
             var list1 = GetRandomPoint2ds(200);
             var lines = new List<Line2d>();
@@ -119,13 +122,13 @@ namespace TestProject1
             scr.WriteFile(@"F:\work\lines2.scr");
         }
 
-        private static readonly string Pattern = "(?<x1>\\d+\\.\\d+) (?<y1>\\d+\\.\\d+);(?<x2>\\d+\\.\\d+) (?<y2>\\d+\\.\\d+)";
-        private static Regex regexLine = new (Pattern);
+        private const string Pattern = "(?<x1>\\d+\\.\\d+) (?<y1>\\d+\\.\\d+);(?<x2>\\d+\\.\\d+) (?<y2>\\d+\\.\\d+)";
+        private static readonly Regex RegexLine = new (Pattern);
 
-        public Line2d? ParseLine(string text)
+        public static Line2d? ParseLine(string text)
         {
-            if (!regexLine.IsMatch(text)) return null;
-            var m = regexLine.Match(text);
+            if (!RegexLine.IsMatch(text)) return null;
+            var m = RegexLine.Match(text);
             var x1 = double.Parse(m.Groups["x1"].Value, CultureInfo.InvariantCulture);
             var y1 = double.Parse(m.Groups["y1"].Value, CultureInfo.InvariantCulture);
             var x2 = double.Parse(m.Groups["x2"].Value, CultureInfo.InvariantCulture);
@@ -133,23 +136,10 @@ namespace TestProject1
             return new Line2d(x1, y1, x2, y2);
         }
 
-        [TestMethod] public void TestMethod5()
-        {
-            var test1 = "0.6012846366974559 0.9414754366938098;0.8479698078839378 0.3919478387540417";
-            var pattern = "(?<x1>\\d+\\.\\d+) (?<y1>\\d+\\.\\d+);(?<x2>\\d+\\.\\d+) (?<y2>\\d+\\.\\d+)";
-            var reg1 = new Regex(pattern);
-
-            if (reg1.IsMatch(test1)) 
-            {
-                var m = reg1.Match(test1);
-                var x1 = double.Parse(m.Groups["x1"].Value, CultureInfo.InvariantCulture);
-                var y1 = double.Parse(m.Groups["y1"].Value, CultureInfo.InvariantCulture);
-                var x2 = double.Parse(m.Groups["x2"].Value, CultureInfo.InvariantCulture);
-                var y2 = double.Parse(m.Groups["y2"].Value, CultureInfo.InvariantCulture);
-            }
-        }
-
-        public List<Line2d> ReadLines(string path)
+        /// <summary>Читаем список линий из файла</summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public static List<Line2d> ReadLines(string path)
         {
             var strings = File.ReadAllLines(path);
             var list = new List<Line2d>();
@@ -161,7 +151,7 @@ namespace TestProject1
             return list;
         }
 
-        [TestMethod] public void TestMethod6()
+        [TestCategory("StateNode"), TestMethod] public void TestStateNodeAdd()
         {
             var strings = File.ReadAllLines(@"F:\work\lines1.txt");
             var lines = new List<Line2d>();
@@ -169,27 +159,26 @@ namespace TestProject1
             foreach (var str in strings)
             {
                 var line = ParseLine(str);
-                if (line != null)
-                {
-                    lines.Add(line);
-                    root.Add(line);
-                }
+                if (line == null) continue;
+                lines.Add(line);
+                root.Add(line);
             }
+            Assert.IsTrue(lines.Count == strings.Length);
         }
 
-        [TestMethod] public void TestMethod7()
+        [TestMethod] public void TestPoint2dOperators()
         {
             var p1 = new Point2d(10, 10);
             var p2 = new Point2d(10, 100);
             var p3 = new Point2d(11, 10);
 
-            var b1 = p1 < p3;
-            var b2 = p1 < p2;
-            var b3 = p1 > p3;
-            var b4 = p1 > p2;
+            Assert.IsFalse(p1 < p3);
+            Assert.IsFalse(p1 < p2);
+            Assert.IsTrue(p1 > p2);
+            Assert.IsTrue(p1 > p3);
         }
 
-        [TestMethod] public void TestMethod8()
+        [TestCategory("Bst"), TestMethod] public void TestBstNodeFind()
         {
             var list1 = GetRandomPoint2ds(9);
             BstNode<Point2d>? root = null;
@@ -202,12 +191,12 @@ namespace TestProject1
 
             var p1 = list1[5];
 
-            var t1 = root.Find(p1);
-
-            root.Remove(p1);
+            var t1 = root?.Find(p1);
+            Assert.IsNotNull(t1);
+            root?.Remove(p1);
         }
 
-        [TestMethod] public void TestMethod9()
+        [TestCategory("Bst"), TestMethod] public void TestBinarySearchTreeRemove()
         {
             var list1 = GetRandomPoint2ds(19);
             var bst = new BinarySearchTree<Point2d>();
@@ -220,13 +209,16 @@ namespace TestProject1
             var left = bst.GetLeft();
             var right = bst.GetRight();
 
+            Assert.IsNotNull(left);
+            Assert.IsNotNull(right);
+
             foreach (var p in list1)
             {
                 bst.Remove(p);
             }
         }
 
-        private bool StateNodeIsNull(StateNode node)
+        private static bool StateNodeIsNull(StateNode node)
         {
             if (node.Line != null) return false;
             if (node.LeftLine != null) return false;
@@ -236,7 +228,7 @@ namespace TestProject1
             return true;
         }
 
-        [TestMethod] public void TestStateNodeRemove()
+        [TestCategory("StateNode"), TestMethod] public void TestStateNodeRemove()
         {
             var lines = ReadLines(@"F:\work\lines2.txt");
             var tree = new StateNode();
@@ -253,7 +245,7 @@ namespace TestProject1
             Assert.IsTrue(StateNodeIsNull(tree));
         }
 
-        [TestMethod] public void TestStateNodeFind()
+        [TestCategory("StateNode"), TestMethod] public void TestStateNodeFind()
         {
             var lines = ReadLines(@"F:\work\lines2.txt");
             var tree = new StateNode();
@@ -268,12 +260,9 @@ namespace TestProject1
 
             Assert.IsNotNull(left, "left");
             Assert.IsNotNull(right, "right");
-
-            var line1 = lines[1];
-            var leftLine = tree.FindLeft(line1);
         }
 
-        [TestMethod]
+        [TestCategory("StateNode"), TestMethod]
         public void TestStateNodeFind2()
         {
             var lines = ReadLines(@"F:\work\lines1.txt");
@@ -285,16 +274,19 @@ namespace TestProject1
 
             var line1 = lines[1];
             var leftLine = tree.FindLeft(line1);
+            Assert.IsNotNull(leftLine);
         }
 
-        [TestMethod] public void TestFindIntersections1()
+        [TestCategory("IntersectionsMethods"), TestMethod]
+        public void TestFindIntersections1()
         {
             var lines = ReadLines(@"F:\work\lines1.txt");
             var i = new IntersectionsMethods();
             var r = i.FindIntersections(lines);
+            Assert.IsTrue(r.Any());
         }
 
-        [TestMethod] public void TestEventQueue1()
+        [TestCategory("EventQueue"), TestMethod] public void TestEventQueue1()
         {
             var lines = ReadLines(@"F:\work\lines1.txt");
             var eventQueue = new EventQueue();
@@ -309,6 +301,8 @@ namespace TestProject1
             {
                 eList.Add(eventQueue.GetNextEvent());
             }
+
+            Assert.IsTrue(eList.Any());
         }
     }
 }

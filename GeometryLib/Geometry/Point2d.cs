@@ -5,14 +5,13 @@ namespace GeometryLib.Geometry
     /// <summary>Точка на плоскости</summary>
     public class Point2d : IComparable
     {
-        public static readonly double Epsilon = 0.01;
+        /// <summary>Допуск для сравнения</summary>
+        public static readonly double Epsilon = 0.0001;
 
-        private bool TestDoubleValue(double d)
+        private static void TestDoubleValue(double d)
         {
             if (!double.IsFinite(d))
                 throw new ArgumentException("Координата должна быть конечной");
-
-            return true;
         }
 
         private double _x;

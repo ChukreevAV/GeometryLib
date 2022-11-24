@@ -1,5 +1,6 @@
 ﻿namespace GeometryLib.Geometry
 {
+    /// <summary>Вектор на плоскости</summary>
     public class Vector2d
     {
         /// <summary>Ось вправо</summary>
@@ -17,10 +18,17 @@
             Y = y;
         }
 
+        /// <summary>Скалярное произведение векторов</summary>
+        /// <param name="v"></param>
+        /// <returns></returns>
         public double DotProduct(Vector2d v) => X * v.X + Y * v.Y;
 
+        /// <summary>Длина вектора</summary>
         public double Length => Math.Sqrt(X * X + Y * Y);
 
+        /// <summary>Угол между векторам</summary>
+        /// <param name="v"></param>
+        /// <returns></returns>
         public double Ang(Vector2d v)
         {
             var d = X * v.Y - v.X * Y;

@@ -17,12 +17,12 @@ namespace GeometryLib
             {
                 foreach (var p2 in ps)
                 {
-                    if (p1 == p2) continue;
+                    if (Equals(p1, p2)) continue;
                     var line1 = new Line2d(p1, p2);
                     var bAdd = true;
                     foreach (var d1 in 
                              from p3 in ps 
-                             where p3 != p1 && p3 != p2 
+                             where !Equals(p3, p1) && !Equals(p3, p2) 
                              select line1.Distance(p3))
                     {
                         if (sign == null)
@@ -45,6 +45,11 @@ namespace GeometryLib
             return hull;
         }
 
+        /// <summary></summary>
+        /// <param name="p1"></param>
+        /// <param name="p2"></param>
+        /// <param name="p3"></param>
+        /// <returns></returns>
         public static double GetAngle(Point2d p1, Point2d p2, Point2d p3)
         {
             var v1 = p1 - p2;
@@ -54,6 +59,9 @@ namespace GeometryLib
             return a2 - a1;
         }
 
+        /// <summary>Поиск выпуклой оболочки</summary>
+        /// <param name="ps">Список точек</param>
+        /// <returns>Точки выпуклой оболочки</returns>
         public static List<Point2d> ConvexHull(List<Point2d> ps)
         {
             var upHull = new List<Point2d> { ps[0], ps[1] };
@@ -64,7 +72,8 @@ namespace GeometryLib
                 do
                 {
                     var c2 = upHull.Count;
-                    var ang = GetAngle(upHull[c2 - 3], upHull[c2 - 2], upHull[c2 - 1]);
+                    var ang = 
+                        GetAngle(upHull[c2 - 3], upHull[c2 - 2], upHull[c2 - 1]);
                     if (ang < Math.PI)
                     {
                         upHull.Remove(upHull[c2 - 2]);
@@ -84,7 +93,8 @@ namespace GeometryLib
                 do
                 {
                     var c2 = lowHull.Count;
-                    var ang = Math.Abs(GetAngle(lowHull[c2 - 3], lowHull[c2 - 2], lowHull[c2 - 1]));
+                    var ang = Math.Abs(
+                        GetAngle(lowHull[c2 - 3], lowHull[c2 - 2], lowHull[c2 - 1]));
                     if (ang > Math.PI)
                     {
                         lowHull.Remove(lowHull[c2 - 2]);
