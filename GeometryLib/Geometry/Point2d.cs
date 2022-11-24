@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace GeometryLib
+namespace GeometryLib.Geometry
 {
     /// <summary>Точка на плоскости</summary>
     public class Point2d : IComparable
@@ -19,8 +19,8 @@ namespace GeometryLib
         private double _y;
 
         /// <summary>Ось вправо</summary>
-        public double X 
-        { 
+        public double X
+        {
             get => _x;
             set
             {
@@ -95,10 +95,10 @@ namespace GeometryLib
         public static Vector2d operator -(Point2d a, Point2d b)
             => new(a.X - b.X, a.Y - b.Y);
 
-        public static bool operator >(Point2d a, Point2d b) 
+        public static bool operator >(Point2d a, Point2d b)
             => a.Y == b.Y ? a.X < b.X : a.Y < b.Y;
 
-        public static bool operator <(Point2d a, Point2d b) 
+        public static bool operator <(Point2d a, Point2d b)
             => a.Y == b.Y ? a.X > b.X : a.Y > b.Y;
     }
 }

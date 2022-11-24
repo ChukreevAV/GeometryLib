@@ -1,4 +1,6 @@
-﻿namespace GeometryLib
+﻿using GeometryLib.Geometry;
+
+namespace GeometryLib
 {
     public class BinarySearchTree<T> where T : class
     {

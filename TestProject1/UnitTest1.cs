@@ -1,5 +1,5 @@
 using GeometryLib;
-
+using GeometryLib.Geometry;
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;

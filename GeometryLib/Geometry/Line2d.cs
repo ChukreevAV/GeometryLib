@@ -1,4 +1,4 @@
-﻿namespace GeometryLib
+﻿namespace GeometryLib.Geometry
 {
     /// <summary>Отрезок</summary>
     public class Line2d

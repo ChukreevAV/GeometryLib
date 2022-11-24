@@ -1,4 +1,4 @@
-﻿namespace GeometryLib
+﻿namespace GeometryLib.Geometry
 {
     public class Vector2d
     {
@@ -25,16 +25,16 @@
         {
             var d = X * v.Y - v.X * Y;
             var sgn = d != 0 ? Math.Sign(d) : 1;
-            return sgn * Math.Acos(DotProduct(v)/(Length * v.Length));
+            return sgn * Math.Acos(DotProduct(v) / (Length * v.Length));
         }
 
-        public static Vector2d operator *(double d, Vector2d v) 
-            => new (d * v.X, d * v.Y);
+        public static Vector2d operator *(double d, Vector2d v)
+            => new(d * v.X, d * v.Y);
 
         public static Vector2d operator *(Vector2d v, double d)
             => new(d * v.X, d * v.Y);
 
         public static Vector2d operator /(Vector2d v, double d)
-            => new(v.X/d, v.Y/d);
+            => new(v.X / d, v.Y / d);
     }
 }
