@@ -39,7 +39,16 @@
 
         public BstNode<T> GetLeft() => Left == null ? this : Left.GetLeft();
 
-        public BstNode<T> GetRight() => Right == null ? this : Right.GetRight();
+        public BstNode<T> GetRight()
+        {
+            if (Right == null)
+            {
+                //return Left != null ? this.Left.GetRight() : this;
+                return this;
+            }
+            else
+                return Right.GetRight();
+        }
 
         public bool Remove(Point2d k)
         {
@@ -63,8 +72,9 @@
                         throw new Exception("Почему то m = null");
                     Key = m.Key;
                     Value = m.Value;
-                    Left = null;
-                    Right = null;
+                    Left = m.Left;
+                    Right = m.Right;
+                    return false;
                 }
 
                 if (Right is { Left: null })

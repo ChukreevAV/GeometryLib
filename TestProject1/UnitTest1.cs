@@ -226,6 +226,16 @@ namespace TestProject1
             }
         }
 
+        private bool StateNodeIsNull(StateNode node)
+        {
+            if (node.Line != null) return false;
+            if (node.LeftLine != null) return false;
+            if (node.RightLine != null) return false;
+            if (node.LeftNode != null) return false;
+            if (node.RightNode != null) return false;
+            return true;
+        }
+
         [TestMethod] public void TestStateNodeRemove()
         {
             var lines = ReadLines(@"F:\work\lines2.txt");
@@ -238,6 +248,52 @@ namespace TestProject1
             foreach (var line in lines)
             {
                 tree.Remove(line);
+            }
+
+            Assert.IsTrue(StateNodeIsNull(tree));
+        }
+
+        [TestMethod] public void TestStateNodeFind()
+        {
+            var lines = ReadLines(@"F:\work\lines2.txt");
+            var tree = new StateNode();
+            foreach (var line in lines)
+            {
+                tree.Add(line);
+            }
+
+            var p1 = new Point2d(0.48703490807666006, 0.34483213219585906);
+            var left = tree.FindLeft(p1);
+            var right = tree.FindRight(p1);
+
+            Assert.IsNotNull(left, "left");
+            Assert.IsNotNull(right, "right");
+
+            var line1 = lines[0];
+            var leftLine = tree.FindLeft(line1);
+        }
+
+        [TestMethod] public void TestFindIntersections1()
+        {
+            var lines = ReadLines(@"F:\work\lines1.txt");
+            var i = new IntersectionsMethods();
+            var r = i.FindIntersections(lines);
+        }
+
+        [TestMethod] public void TestEventQueue1()
+        {
+            var lines = ReadLines(@"F:\work\lines1.txt");
+            var eventQueue = new EventQueue();
+            var eList = new List<SweepEvent?>();
+
+            foreach (var l in lines)
+            {
+                eventQueue.AddEvent(l);
+            }
+
+            while (!eventQueue.IsEmpty())
+            {
+                eList.Add(eventQueue.GetNextEvent());
             }
         }
     }

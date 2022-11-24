@@ -6,6 +6,11 @@
 
         public List<Line2d> Lines { get; } = new();
 
+        public SweepEvent(Point2d p)
+        {
+            Point = p;
+        }
+
         public SweepEvent(Point2d p, Line2d line)
         {
             Point = p;

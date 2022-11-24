@@ -1,6 +1,4 @@
-﻿using static System.Net.Mime.MediaTypeNames;
-
-namespace GeometryLib
+﻿namespace GeometryLib
 {
     /// <summary>Отрезок</summary>
     public class Line2d
