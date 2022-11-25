@@ -6,7 +6,7 @@ namespace GeometryLib.Geometry
     public class Point2d : IComparable
     {
         /// <summary>Допуск для сравнения</summary>
-        public static readonly double Epsilon = 0.0001;
+        public static readonly double Epsilon = 0.00000001;
 
         private static void TestDoubleValue(double d)
         {

@@ -51,6 +51,10 @@
             return Start.Y > End.Y ? Start : End;
         }
 
+        private double GetX(double y) => (-B * y - C) / A;
+
+        public Point2d GetPointByY(double y) => new (GetX(y), y);
+
         /// <summary>Параметр A в уравнении Ax+By+C=0</summary>
         public double A => Start.Y - End.Y;
 
@@ -84,7 +88,10 @@
         /// <summary>Точка "принадлежит" отрезку</summary>
         /// <param name="p"></param>
         /// <returns></returns>
-        public bool Contain(Point2d p) => LinePointTest(this, p);
+        public bool Contain(Point2d p)
+        {
+            return Math.Abs(Distance(p)) < Point2d.Epsilon;
+        }
 
         /// <summary>Точка "внутри" отрезка</summary>
         /// <param name="p"></param>

@@ -103,9 +103,9 @@ namespace TestProject1
 
         [TestCategory("Geometry"), TestMethod] public void TestCreateLines()
         {
-            var list1 = GetRandomPoint2ds(200);
+            var list1 = GetRandomPoint2ds(30);
             var lines = new List<Line2d>();
-            for (var i = 0; i < 100; i+=2)
+            for (var i = 0; i < 15; i+=2)
             {
                 lines.Add(new Line2d(list1[i], list1[i + 1]));
             }
@@ -116,11 +116,11 @@ namespace TestProject1
             {
                 sb.AppendLine(l.ToString());
             }
-            File.WriteAllText(@"F:\work\lines2.txt", sb.ToString());
+            File.WriteAllText(@"F:\work\lines3.txt", sb.ToString());
 
             var scr = new AutoCadScript();
             scr.AddLines(lines);
-            scr.WriteFile(@"F:\work\lines2.scr");
+            scr.WriteFile(@"F:\work\lines3.scr");
         }
 
         private const string Pattern = "(?<x1>\\d+\\.\\d+) (?<y1>\\d+\\.\\d+);(?<x2>\\d+\\.\\d+) (?<y2>\\d+\\.\\d+)";
@@ -162,7 +162,7 @@ namespace TestProject1
                 var line = ParseLine(str);
                 if (line == null) continue;
                 lines.Add(line);
-                root.Add(line);
+                root.Add(line.First(), line);
             }
             Assert.IsTrue(lines.Count == strings.Length);
         }
@@ -235,7 +235,7 @@ namespace TestProject1
             var tree = new StateNode();
             foreach (var line in lines)
             {
-                tree.Add(line);
+                tree.Add(line.First(), line);
             }
 
             foreach (var line in lines)
@@ -252,7 +252,7 @@ namespace TestProject1
             var tree = new StateNode();
             foreach (var line in lines)
             {
-                tree.Add(line);
+                tree.Add(line.First(), line);
             }
 
             var p1 = new Point2d(0.48703490807666006, 0.34483213219585906);
@@ -270,12 +270,12 @@ namespace TestProject1
             var tree = new StateNode();
             foreach (var line in lines)
             {
-                tree.Add(line);
+                tree.Add(line.First(), line);
             }
 
             var line1 = lines[1];
-            var leftLine = tree.FindLeft(line1);
-            Assert.IsNotNull(leftLine);
+            //var leftLine = tree.FindLeft(line1);
+            //Assert.IsNotNull(leftLine);
         }
 
         [TestCategory("IntersectionsMethods"), TestMethod]
@@ -304,6 +304,32 @@ namespace TestProject1
             }
 
             Assert.IsTrue(eList.Any());
+        }
+
+        [TestMethod] public void TestMethod1()
+        {
+            var lines = ReadLines(@"F:\work\lines1.txt");
+            var l3 = lines[3];
+            var l4 = lines[4];
+            var p1 = new Point2d(0.36988774764577725, 0.5687411345076795);
+            var b1 = l3.Contain(p1);
+            var res1 = IntersectionsMethods.GetPointPosition(l4, p1);
+        }
+
+        [TestMethod] public void TestMethod2()
+        {
+            var p1 = new Point2d(0, 0);
+            var p2 = new Point2d(10, 10);
+            var l1 = new Line2d(p1, p2);
+            var x1 = l1.GetPointByY(0.5); 
+            Assert.IsTrue(x1.X == 0.5);
+            var x2 = l1.GetPointByY(5);
+            Assert.IsTrue(x2.X == 5);
+        }
+
+        [TestMethod] public void TestMethod3()
+        {
+
         }
     }
 }

@@ -37,9 +37,8 @@ namespace GeometryLib.Intersections
         private void HandleEventPoint(SweepEvent? ev)
         {
             if (ev == null) return;
-            var lines = _t.Find(ev.Point).Distinct().ToList(); //!!?
-            if (lines.Any()) _result.Add(new SweepEvent(ev.Point, lines));
-            //var groups = lines.GroupBy(l => GetPointPosition(l, ev.Point));
+            var dp = new Point2d(ev.Point.X, ev.Point.Y + Point2d.Epsilon);
+            var lines = _t.Find(ev.Point); //!!?
 
             var cList = lines
                 .Where(l
@@ -47,12 +46,35 @@ namespace GeometryLib.Intersections
                 .ToList();
 
             var upList = ev.Lines.Where(l
-                => GetPointPosition(l, ev.Point) == PointPosition.Up).ToList();
+                => GetPointPosition(l, ev.Point) == PointPosition.Up)
+                .ToList();
 
-            _t.Remove(lines);
+            var downList = lines.Where(l
+                => GetPointPosition(l, ev.Point) == PointPosition.Down)
+                .ToList();
 
-            _t.Add(upList);
-            _t.Add(cList);
+            var rList = new List<Line2d>();
+            rList.AddRange(upList);
+            rList.AddRange(cList);
+            rList.AddRange(downList);
+            rList = rList.Distinct().ToList();
+
+            if ( rList.Count > 1 )
+            {
+                _result.Add(new SweepEvent(ev.Point, rList));
+            }
+
+            _t.Remove(downList);
+            _t.Remove(cList);
+
+            //var aList = new List<Line2d>();
+            //aList.AddRange(upList);
+            //aList.AddRange(cList);
+            //aList = aList.OrderBy(l => l.First()).ToList();
+            //_t.Add(aList);
+
+            _t.Add(dp, upList);
+            _t.Add(dp, cList);
 
             if (!upList.Any() && !cList.Any())
             {
@@ -69,12 +91,12 @@ namespace GeometryLib.Intersections
                 list1 = list1.OrderBy(l => l.First().Y).ToList();
 
                 var left = list1.First();
-                var right = _t.FindRight(left);
+                var right = _t.FindRight(dp, left);
                 if (right != null)
                     FindNewEvent(left, right, ev.Point);
 
                 right = list1.Last();
-                left = _t.FindLeft(right);
+                left = _t.FindLeft(dp, right);
                 if (left != null)
                     FindNewEvent(left, right, ev.Point);
             }

@@ -25,10 +25,10 @@ namespace GeometryLib.Intersections
             LeftLine = line;
         }
 
-        public StateNode(StateNode parent, Line2d line1, Line2d line2)
+        public StateNode(StateNode parent, Point2d p, Line2d line1, Line2d line2)
         {
             _parent = parent;
-            if (IsRight(line1, line2))
+            if (IsRight(p, line1, line2))
             {
                 Line = line1;
                 LeftLine = line1;
@@ -70,46 +70,40 @@ namespace GeometryLib.Intersections
             return _parent?.GetParentRight(this);
         }
 
-        public Line2d? FindLeft(Line2d l)
+        public Line2d? FindLeft(Point2d p, Line2d l)
         {
-            var p = l.First();
+            Line2d? result = null;
 
-            if (IsRight(p))
+            if (RightNode != null) result = RightNode.FindLeft(p, l);
+            if (RightLine == l)
             {
-                if (RightNode != null) return RightNode.FindLeft(l);
-                if (RightLine == l)
-                {
-                    return LeftNode != null ? LeftNode.GetRight() : LeftLine;
-                }
-            }
-            else
-            {
-                if (LeftNode != null) return LeftNode.FindLeft(l);
-                if (LeftLine == l) return _parent?.GetParentLeft(this);
+                result = LeftNode != null ? LeftNode.GetRight() : LeftLine;
             }
 
-            return null;
+            if (result != null) return result;
+
+            if (LeftNode != null) result = LeftNode.FindLeft(p, l);
+            if (LeftLine == l) result = _parent?.GetParentLeft(this);
+
+            return result;
         }
 
-        public Line2d? FindRight(Line2d l)
+        public Line2d? FindRight(Point2d p, Line2d l)
         {
-            var p = l.First();
+            Line2d? result = null;
 
-            if (IsRight(p))
+            if (RightNode != null) result = RightNode.FindRight(p, l);
+            if (RightLine == l) result = _parent?.GetParentRight(this);
+
+            if (result != null) return result;
+
+            if (LeftNode != null) result = LeftNode.FindRight(p, l);
+            if (LeftLine == l)
             {
-                if (RightNode != null) return RightNode.FindRight(l);
-                if (RightLine == l) return _parent?.GetParentRight(this);
-            }
-            else
-            {
-                if (LeftNode != null) return LeftNode.FindRight(l);
-                if (LeftLine == l)
-                {
-                    return RightNode != null ? RightNode.GetLeft() : RightLine;
-                }
+                result = RightNode != null ? RightNode.GetLeft() : RightLine;
             }
 
-            return null;
+            return result;
         }
 
         public Line2d? FindLeft(Point2d p)
@@ -117,8 +111,7 @@ namespace GeometryLib.Intersections
             if (IsRight(p))
             {
                 if (RightNode != null) return RightNode.FindLeft(p);
-                else
-                    return LeftNode != null ? LeftNode.FindLeft(p) : LeftLine;
+                return LeftNode != null ? LeftNode.FindLeft(p) : LeftLine;
             }
 
             return LeftNode != null ? LeftNode.FindLeft(p) : LeftLine;
@@ -138,31 +131,80 @@ namespace GeometryLib.Intersections
         {
             if (Line == null) return false; //!!!
 
-            var tp = Line.First();
-            return tp.Y < p.Y;
+            //var tp = Line.First();
+            //return tp.Y < p.Y;
+            var tp = Line.GetPointByY(p.Y);
+            return p.X < tp.X;
         }
 
-        public bool IsRight(Line2d left, Line2d test)
+        public bool IsRight(Point2d p, Line2d left, Line2d test)
         {
-            var f1 = left.First();
-            var f2 = test.First();
-
-            return f1.Y < f2.Y;
+            var p1 = left.GetPointByY(p.Y);
+            var p2 = test.GetPointByY(p.Y);
+            return p1.X > p2.X;
         }
 
         public Line2d? GetLeft() => LeftLine ?? LeftNode?.GetLeft();
 
         public Line2d? GetRight() => RightLine ?? RightNode?.GetRight();
 
-        public void Add(List<Line2d> lines)
+        public void Add(Point2d eventPoint, List<Line2d> lines)
         {
             foreach (var line in lines)
             {
-                Add(line);
+                var p = line.GetPointByY(eventPoint.Y);
+                Add(p, line);
             }
         }
 
-        public void Add(Line2d line)
+        //public void Add(List<Line2d> lines)
+        //{
+        //    foreach (var line in lines)
+        //    {
+        //        var p = line.First();
+        //        Add(p, line);
+        //    }
+        //}
+
+        //public void Add(Line2d line)
+        //{
+        //    if (Line == null)
+        //    {
+        //        Line = line;
+        //        LeftLine = line;
+        //        return;
+        //    }
+
+        //    if (IsRight(Line, line))
+        //    {
+        //        if (RightNode != null)
+        //        {
+        //            RightNode.Add(line);
+        //            return;
+        //        }
+
+        //        if (RightLine == null) RightLine = line;
+        //        else
+        //        {
+        //            RightNode = new StateNode(this, RightLine, line);
+        //            RightLine = null;
+        //        }
+        //        return;
+        //    }
+
+        //    if (LeftNode != null) LeftNode.Add(line);
+        //    else
+        //    {
+        //        if (LeftLine == null) LeftLine = line;
+        //        else
+        //        {
+        //            LeftNode = new StateNode(this, LeftLine, line);
+        //            LeftLine = null;
+        //        }
+        //    }
+        //}
+
+        public void Add(Point2d eventPoint, Line2d line)
         {
             if (Line == null)
             {
@@ -171,32 +213,30 @@ namespace GeometryLib.Intersections
                 return;
             }
 
-            if (IsRight(Line, line))
+            if (IsRight(eventPoint))
             {
                 if (RightNode != null)
                 {
-                    RightNode.Add(line);
+                    RightNode.Add(eventPoint, line);
                     return;
                 }
 
                 if (RightLine == null) RightLine = line;
                 else
                 {
-                    RightNode =
-                        new StateNode(this, RightLine, line);
+                    RightNode = new StateNode(this, eventPoint, RightLine, line);
                     RightLine = null;
                 }
                 return;
             }
 
-            if (LeftNode != null) LeftNode.Add(line);
+            if (LeftNode != null) LeftNode.Add(eventPoint, line);
             else
             {
                 if (LeftLine == null) LeftLine = line;
                 else
                 {
-                    LeftNode =
-                        new StateNode(this, LeftLine, line);
+                    LeftNode = new StateNode(this, eventPoint, line, LeftLine);
                     LeftLine = null;
                 }
             }
@@ -299,8 +339,8 @@ namespace GeometryLib.Intersections
         {
             if (Line == null) return;
 
-            if (IsRight(Line, line)) RemoveRight(line);
-            else RemoveLeft(line);
+            RemoveRight(line);
+            RemoveLeft(line);
         }
     }
 }

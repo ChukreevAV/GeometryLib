@@ -2,10 +2,13 @@
 
 namespace GeometryLib.Intersections
 {
+    /// <summary>Очередь событий</summary>
     public class EventQueue
     {
         private BinarySearchTree<SweepEvent> Tree { get; } = new();
 
+        /// <summary>Добавить событие</summary>
+        /// <param name="p"></param>
         public void AddEvent(Point2d p)
         {
             var even = Tree.Find(p);
@@ -14,6 +17,9 @@ namespace GeometryLib.Intersections
             Tree.Add(p, even);
         }
 
+        /// <summary>Добавить событие</summary>
+        /// <param name="p"></param>
+        /// <param name="line"></param>
         public void AddEvent(Point2d p, Line2d line)
         {
             var even = Tree.Find(p);
@@ -28,6 +34,10 @@ namespace GeometryLib.Intersections
             }
         }
 
+        /// <summary>Добавить событие</summary>
+        /// <param name="p"></param>
+        /// <param name="line1"></param>
+        /// <param name="line2"></param>
         public void AddEvent(Point2d p, Line2d line1, Line2d line2)
         {
             var even = Tree.Find(p);
@@ -43,22 +53,16 @@ namespace GeometryLib.Intersections
             }
         }
 
+        /// <summary>Добавить события отрезка</summary>
+        /// <param name="line"></param>
         public void AddEvent(Line2d line)
         {
             AddEvent(line.First(), line);
             AddEvent(line.Last());
         }
-
-        public void AddUpEvent(Line2d line)
-        {
-            AddEvent(line.First(), line);
-        }
-
-        public void AddDownEvent(Line2d line)
-        {
-            AddEvent(line.Last(), line);
-        }
-
+        
+        /// <summary>Получить следующее событие</summary>
+        /// <returns></returns>
         public SweepEvent? GetNextEvent()
         {
             var nn = Tree.GetRight();
@@ -68,6 +72,8 @@ namespace GeometryLib.Intersections
             return ev;
         }
 
+        /// <summary>Признак пустой очереди</summary>
+        /// <returns></returns>
         public bool IsEmpty() => Tree.IsEmpty();
     }
 }

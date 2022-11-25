@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using GeometryLib;
 
 namespace Viewer2d
 {
@@ -79,7 +80,7 @@ namespace Viewer2d
 
         private int _position = 0;
 
-        private List<Line2d> _lines = ReadLines(@"F:\work\lines1.txt");
+        private List<Line2d> _lines = ReadLines(@"F:\work\lines3.txt");
         private StateNode _tree;
 
         private void OnTimedEvent(object? sender, EventArgs e)
@@ -101,7 +102,7 @@ namespace Viewer2d
             _tree = new StateNode();
             foreach (var line in _lines)
             {
-                _tree.Add(line);
+                //_tree.Add(line);
             }
 
             //SetTimer();
@@ -116,11 +117,12 @@ namespace Viewer2d
 
             foreach (var ev in r)
             {
-                DrawPoint(ev.Point, Brushes.Red);
+                var pp = ev.Point;
+                DrawPoint(pp, Brushes.Red);
             }
         }
 
-        private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
             WorkCanvas.Children.Clear();
 
@@ -133,8 +135,8 @@ namespace Viewer2d
             var line1 = _lines[_position++];
             DrawLine(line1, Brushes.DarkBlue);
             //var leftLine = _tree.FindLeft(line1);
-            var leftLine = _tree.FindRight(line1);
-            if (leftLine != null) DrawLine(leftLine, Brushes.Red);
+            //var leftLine = _tree.FindRight(line1);
+            //if (leftLine != null) DrawLine(leftLine, Brushes.Red);
         }
     }
 }
