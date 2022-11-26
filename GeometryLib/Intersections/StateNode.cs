@@ -2,29 +2,62 @@
 
 namespace GeometryLib.Intersections
 {
+    /// <summary>Узел структуры состояния алгоритма поиска пересечения</summary>
     public class StateNode
     {
         private StateNode? _parent;
 
+        /// <summary>Ключевая линия</summary>
         public Line2d? Line { get; set; }
 
+        /// <summary>Левая линия</summary>
         public Line2d? LeftLine { get; set; }
 
+        /// <summary>Правая линия</summary>
         public Line2d? RightLine { get; set; }
 
+        /// <summary>Левый узел</summary>
         public StateNode? LeftNode { get; set; }
 
+        /// <summary>Правый узел</summary>
         public StateNode? RightNode { get; set; }
 
-        public StateNode() { }
-
-        public StateNode(StateNode parent, Line2d line)
+        /// <summary>Определяем направление для точки</summary>
+        /// <param name="p">Точка на линии заметания</param>
+        /// <returns></returns>
+        private bool IsRight(Point2d p)
         {
-            _parent = parent;
-            Line = line;
-            LeftLine = line;
+            if (Line == null) return false;
+            var tp = Line.GetPointByY(p.Y);
+            return p.X > tp.X;
         }
 
+        private static double Distance(Line2d test, Point2d p)
+        {
+            var tp = test.GetPointByY(p.Y);
+            return tp.X - p.X;
+        }
+
+        /// <summary>Определяем положение отрезка относительно опорного</summary>
+        /// <param name="p">Точка на линии заметания</param>
+        /// <param name="left">Опорный отрезок</param>
+        /// <param name="test">Проверяемый отрезок</param>
+        /// <returns></returns>
+        private static bool IsRight(Point2d p, Line2d left, Line2d test)
+        {
+            var p1 = left.GetPointByY(p.Y);
+            var p2 = test.GetPointByY(p.Y);
+            return p1.X < p2.X;
+        }
+
+        /// <summary>Конструктор</summary>
+        public StateNode() { }
+
+        /// <summary>Конструктор</summary>
+        /// <param name="parent">Родитель</param>
+        /// <param name="p">Точка на линии заметания</param>
+        /// <param name="line1"></param>
+        /// <param name="line2"></param>
         public StateNode(StateNode parent, Point2d p, Line2d line1, Line2d line2)
         {
             _parent = parent;
@@ -42,10 +75,12 @@ namespace GeometryLib.Intersections
             }
         }
 
+        /// <summary>Поиск отрезков по точке</summary>
+        /// <param name="p"></param>
+        /// <returns></returns>
         public List<Line2d> Find(Point2d p)
         {
             var rList = new List<Line2d>();
-            //if (Line?.Contain(p) == true) rList.Add(Line);
 
             if (LeftLine?.Contain(p) == true) rList.Add(LeftLine);
             if (RightLine?.Contain(p) == true) rList.Add(RightLine);
@@ -56,29 +91,34 @@ namespace GeometryLib.Intersections
             return rList;
         }
 
+        /// <summary>Получаем левый отрезок через предка</summary>
+        /// <param name="child">Дочерний узел</param>
+        /// <returns>Левый отрезок</returns>
         private Line2d? GetParentLeft(StateNode child)
         {
             if (RightNode == child) return LeftLine ?? LeftNode?.GetRight();
-
             return _parent?.GetParentLeft(this);
         }
 
+        /// <summary>Получаем правый отрезок через предка</summary>
+        /// <param name="child">Дочерний узел</param>
+        /// <returns>Правый отрезок</returns>
         private Line2d? GetParentRight(StateNode child)
         {
             if (LeftNode == child) return RightLine ?? RightNode?.GetLeft();
-
             return _parent?.GetParentRight(this);
         }
 
+        /// <summary>Получить отрезок слева от заданного отрезка</summary>
+        /// <param name="p">Точка на линии заметания</param>
+        /// <param name="l">Заданный отрезок</param>
+        /// <returns>Левый отрезок</returns>
         public Line2d? FindLeft(Point2d p, Line2d l)
         {
             Line2d? result = null;
 
             if (RightNode != null) result = RightNode.FindLeft(p, l);
-            if (RightLine == l)
-            {
-                result = LeftNode != null ? LeftNode.GetRight() : LeftLine;
-            }
+            if (RightLine == l) result = LeftNode != null ? LeftNode.GetRight() : LeftLine;
 
             if (result != null) return result;
 
@@ -88,6 +128,10 @@ namespace GeometryLib.Intersections
             return result;
         }
 
+        /// <summary>Получить отрезок справа от заданного отрезка</summary>
+        /// <param name="p">Точка на линии заметания</param>
+        /// <param name="l">Заданный отрезок</param>
+        /// <returns>Правый отрезок</returns>
         public Line2d? FindRight(Point2d p, Line2d l)
         {
             Line2d? result = null;
@@ -98,56 +142,57 @@ namespace GeometryLib.Intersections
             if (result != null) return result;
 
             if (LeftNode != null) result = LeftNode.FindRight(p, l);
-            if (LeftLine == l)
-            {
-                result = RightNode != null ? RightNode.GetLeft() : RightLine;
-            }
+            if (LeftLine == l) result = RightNode != null ? RightNode.GetLeft() : RightLine;
 
             return result;
         }
 
+        /// <summary>Получить крайне левый отрезок</summary>
+        /// <param name="p">Точка на линии заметания</param>
+        /// <returns>Крайне левый отрезок</returns>
         public Line2d? FindLeft(Point2d p)
         {
-            if (IsRight(p))
-            {
-                if (RightNode != null) return RightNode.FindLeft(p);
-                return LeftNode != null ? LeftNode.FindLeft(p) : LeftLine;
-            }
+            var ll = LeftNode != null ? LeftNode?.FindLeft(p) : LeftLine;
+            var rl = RightNode != null ? RightNode?.FindLeft(p) : RightLine;
 
-            return LeftNode != null ? LeftNode.FindLeft(p) : LeftLine;
+            if (ll == null) return rl;
+            if (rl == null) return ll;
+            var d1 = Distance(ll, p);
+            var d2 = Distance(rl, p);
+
+            if (d1 > 0) return rl;
+            if (d2 > 0) return ll;
+
+            return d1 > d2 ? ll : rl;
         }
+
+        /// <summary>Получить крайне правый отрезок</summary>
+        /// <param name="p">Точка на линии заметания</param>
+        /// <returns>Крайне правый отрезок</returns>
 
         public Line2d? FindRight(Point2d p)
         {
-            if (IsRight(p))
-                return RightNode == null ? RightLine : RightNode.FindRight(p);
+            var ll = LeftNode != null ? LeftNode?.FindRight(p) : LeftLine;
+            var rl = RightNode != null ? RightNode?.FindRight(p) : RightLine;
 
-            if (LeftNode != null) return LeftNode.FindRight(p);
+            if (ll == null) return rl;
+            if (rl == null) return ll;
+            var d1 = Distance(ll, p);
+            var d2 = Distance(rl, p);
 
-            return RightNode != null ? RightNode.FindRight(p) : RightLine;
+            if (d1 < 0) return rl;
+            if (d2 < 0) return ll;
+
+            return d1 < d2 ? ll : rl;
         }
 
-        public bool IsRight(Point2d p)
-        {
-            if (Line == null) return false; //!!!
+        private Line2d? GetLeft() => LeftLine ?? LeftNode?.GetLeft();
 
-            //var tp = Line.First();
-            //return tp.Y < p.Y;
-            var tp = Line.GetPointByY(p.Y);
-            return p.X < tp.X;
-        }
+        private Line2d? GetRight() => RightLine ?? RightNode?.GetRight();
 
-        public bool IsRight(Point2d p, Line2d left, Line2d test)
-        {
-            var p1 = left.GetPointByY(p.Y);
-            var p2 = test.GetPointByY(p.Y);
-            return p1.X > p2.X;
-        }
-
-        public Line2d? GetLeft() => LeftLine ?? LeftNode?.GetLeft();
-
-        public Line2d? GetRight() => RightLine ?? RightNode?.GetRight();
-
+        /// <summary>Добавление отрезков в структуру</summary>
+        /// <param name="eventPoint">Точка на линии заметания</param>
+        /// <param name="lines">Отрезки для добавления</param>
         public void Add(Point2d eventPoint, List<Line2d> lines)
         {
             foreach (var line in lines)
@@ -157,53 +202,9 @@ namespace GeometryLib.Intersections
             }
         }
 
-        //public void Add(List<Line2d> lines)
-        //{
-        //    foreach (var line in lines)
-        //    {
-        //        var p = line.First();
-        //        Add(p, line);
-        //    }
-        //}
-
-        //public void Add(Line2d line)
-        //{
-        //    if (Line == null)
-        //    {
-        //        Line = line;
-        //        LeftLine = line;
-        //        return;
-        //    }
-
-        //    if (IsRight(Line, line))
-        //    {
-        //        if (RightNode != null)
-        //        {
-        //            RightNode.Add(line);
-        //            return;
-        //        }
-
-        //        if (RightLine == null) RightLine = line;
-        //        else
-        //        {
-        //            RightNode = new StateNode(this, RightLine, line);
-        //            RightLine = null;
-        //        }
-        //        return;
-        //    }
-
-        //    if (LeftNode != null) LeftNode.Add(line);
-        //    else
-        //    {
-        //        if (LeftLine == null) LeftLine = line;
-        //        else
-        //        {
-        //            LeftNode = new StateNode(this, LeftLine, line);
-        //            LeftLine = null;
-        //        }
-        //    }
-        //}
-
+        /// <summary>Добавление отрезка в структуру</summary>
+        /// <param name="eventPoint">Точка на линии заметания</param>
+        /// <param name="line">Отрезок для отопления</param>
         public void Add(Point2d eventPoint, Line2d line)
         {
             if (Line == null)
@@ -272,6 +273,8 @@ namespace GeometryLib.Intersections
             }
         }
 
+        /// <summary>Удалить отрезки</summary>
+        /// <param name="lines">Список отрезков</param>
         public void Remove(List<Line2d> lines)
         {
             foreach (var line in lines)
@@ -335,6 +338,8 @@ namespace GeometryLib.Intersections
             if (Line == line) Line = LeftNode?.GetRight();
         }
 
+        /// <summary>Удалить отрезок</summary>
+        /// <param name="line">Отрезок на удаление</param>
         public void Remove(Line2d line)
         {
             if (Line == null) return;

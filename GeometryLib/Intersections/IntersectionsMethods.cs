@@ -30,7 +30,7 @@ namespace GeometryLib.Intersections
         {
             if (sl == null || sr == null) return;
             var ip = sl.Intersect(sr);
-            if (ip != null && ip.Y > p.Y)
+            if (ip != null && ip.Y > p.Y) 
                 _eventQueue.AddEvent(ip, sl, sr);
         }
 
@@ -88,17 +88,15 @@ namespace GeometryLib.Intersections
                 var list1 = new List<Line2d>();
                 list1.AddRange(upList);
                 list1.AddRange(cList);
-                list1 = list1.OrderBy(l => l.First().Y).ToList();
+                list1 = list1.OrderBy(l => l.GetPointByY(dp.Y)).ToList();
 
                 var left = list1.First();
-                var right = _t.FindRight(dp, left);
-                if (right != null)
-                    FindNewEvent(left, right, ev.Point);
+                var right = _t.FindLeft(dp, left);
+                if (right != null) FindNewEvent(left, right, ev.Point);
 
                 right = list1.Last();
-                left = _t.FindLeft(dp, right);
-                if (left != null)
-                    FindNewEvent(left, right, ev.Point);
+                left = _t.FindRight(dp, right);
+                if (left != null) FindNewEvent(left, right, ev.Point);
             }
         }
 

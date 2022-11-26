@@ -84,8 +84,8 @@ namespace GeometryLib.Geometry
         /// <inheritdoc/>
         public override string ToString()
         {
-            return X.ToString(CultureInfo.InvariantCulture) + " " +
-                   Y.ToString(CultureInfo.InvariantCulture);
+            //return X.ToString(CultureInfo.InvariantCulture) + " " + Y.ToString(CultureInfo.InvariantCulture);
+            return X.ToString("F4") + " " + Y.ToString("F4");
         }
 
         public static Vector2d operator +(Point2d a, Point2d b)

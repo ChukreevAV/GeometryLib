@@ -1,5 +1,6 @@
 ﻿using GeometryLib.Geometry;
 using GeometryLib.Intersections;
+
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -10,7 +11,6 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
-using GeometryLib;
 
 namespace Viewer2d
 {
@@ -80,7 +80,7 @@ namespace Viewer2d
 
         private int _position = 0;
 
-        private List<Line2d> _lines = ReadLines(@"F:\work\lines3.txt");
+        private List<Line2d> _lines = ReadLines(@"F:\work\lines2.txt");
         private StateNode _tree;
 
         private void OnTimedEvent(object? sender, EventArgs e)
@@ -120,6 +120,12 @@ namespace Viewer2d
                 var pp = ev.Point;
                 DrawPoint(pp, Brushes.Red);
             }
+
+            var sn = new StateNode();
+            var line1 = _lines[0];
+            sn.Add(line1.First(), line1);
+            StackPanel1.DataContext = sn;
+            //TextBlock1.Text = sn.Line?.ToString();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
