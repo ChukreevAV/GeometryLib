@@ -1,31 +1,39 @@
 ﻿using GeometryLib.Geometry;
 
+using System.ComponentModel;
+
 namespace GeometryLib.Intersections
 {
     public class IntersectionsMethods
     {
+        /// <summary>Положение точки относительно отрезка</summary>
         public enum PointPosition
         {
-            Up,
-            Center,
-            Down,
-            None
+            [Description("Начало отрезка")] Up,
+            [Description("Внутри отрезка")] Center,
+            [Description("Конец отрезка")] Down,
+            [Description("Нигде")] None
         }
 
+        /// <summary>Получаем положение точки относительно отрезка</summary>
+        /// <param name="line">Отрезок</param>
+        /// <param name="p">Точка</param>
+        /// <returns>Положение точки</returns>
         public static PointPosition GetPointPosition(Line2d line, Point2d p)
         {
-            if (p.Distance(line.First()) < Point2d.Epsilon)
-                return PointPosition.Up;
-            if (p.Distance(line.Last()) < Point2d.Epsilon)
-                return PointPosition.Down;
-            if (line.IsCenter(p)) return PointPosition.Center;
-            return PointPosition.None;
+            if (p.Distance(line.First()) < Point2d.Epsilon) return PointPosition.Up;
+            if (p.Distance(line.Last()) < Point2d.Epsilon) return PointPosition.Down;
+            return line.IsCenter(p) ? PointPosition.Center : PointPosition.None;
         }
 
-        private StateNode _t = new();
+        private readonly StateNode _statusTree = new();
         private EventQueue _eventQueue = new();
-        private List<SweepEvent> _result = new();
+        private readonly List<SweepEvent> _result = new();
 
+        /// <summary>Поиск точки нового события - пересечения</summary>
+        /// <param name="sl">Левый отрезок</param>
+        /// <param name="sr">Правый отрезок</param>
+        /// <param name="p">Точка события</param>
         private void FindNewEvent(Line2d? sl, Line2d? sr, Point2d p)
         {
             if (sl == null || sr == null) return;
@@ -34,23 +42,28 @@ namespace GeometryLib.Intersections
                 _eventQueue.AddEvent(ip, sl, sr);
         }
 
+        /// <summary>Обработка события</summary>
+        /// <param name="ev">Событие</param>
         private void HandleEventPoint(SweepEvent? ev)
         {
             if (ev == null) return;
+
             var dp = new Point2d(ev.Point.X, ev.Point.Y + Point2d.Epsilon);
-            var lines = _t.Find(ev.Point); //!!?
+            var lines = _statusTree.Find(ev.Point); //!!?
 
+            //Пересекающие отрезки
             var cList = lines
-                .Where(l
-                    => GetPointPosition(l, ev.Point) == PointPosition.Center)
+                .Where(l => GetPointPosition(l, ev.Point) == PointPosition.Center)
                 .ToList();
 
-            var upList = ev.Lines.Where(l
-                => GetPointPosition(l, ev.Point) == PointPosition.Up)
+            //Отрезки на добавление
+            var upList = ev.Lines
+                .Where(l => GetPointPosition(l, ev.Point) == PointPosition.Up)
                 .ToList();
 
-            var downList = lines.Where(l
-                => GetPointPosition(l, ev.Point) == PointPosition.Down)
+            //Отрезки на удаление
+            var downList = lines
+                .Where(l => GetPointPosition(l, ev.Point) == PointPosition.Down)
                 .ToList();
 
             var rList = new List<Line2d>();
@@ -59,27 +72,19 @@ namespace GeometryLib.Intersections
             rList.AddRange(downList);
             rList = rList.Distinct().ToList();
 
-            if ( rList.Count > 1 )
-            {
-                _result.Add(new SweepEvent(ev.Point, rList));
-            }
+            if ( rList.Count > 1) _result.Add(new SweepEvent(ev.Point, rList));
 
-            _t.Remove(downList);
-            _t.Remove(cList);
+            _statusTree.Remove(downList);
+            _statusTree.Remove(cList);
 
-            //var aList = new List<Line2d>();
-            //aList.AddRange(upList);
-            //aList.AddRange(cList);
-            //aList = aList.OrderBy(l => l.First()).ToList();
-            //_t.Add(aList);
-
-            _t.Add(dp, upList);
-            _t.Add(dp, cList);
+            _statusTree.Add(dp, upList);
+            _statusTree.Add(dp, cList);
 
             if (!upList.Any() && !cList.Any())
             {
-                var left = _t.FindLeft(ev.Point);
-                var right = _t.FindRight(ev.Point);
+                //Поиск новых пересечений после удаления отрезка
+                var left = _statusTree.FindLeft(ev.Point);
+                var right = _statusTree.FindRight(ev.Point);
 
                 FindNewEvent(left, right, ev.Point);
             }
@@ -91,15 +96,18 @@ namespace GeometryLib.Intersections
                 list1 = list1.OrderBy(l => l.GetPointByY(dp.Y)).ToList();
 
                 var left = list1.First();
-                var right = _t.FindLeft(dp, left);
+                var right = _statusTree.FindLeft(dp, left);
                 if (right != null) FindNewEvent(left, right, ev.Point);
 
                 right = list1.Last();
-                left = _t.FindRight(dp, right);
+                left = _statusTree.FindRight(dp, right);
                 if (left != null) FindNewEvent(left, right, ev.Point);
             }
         }
 
+        /// <summary>Поиск пересечений отрезков</summary>
+        /// <param name="lines">Список отрезков</param>
+        /// <returns>Список пересечений</returns>
         public List<SweepEvent> FindIntersections(List<Line2d> lines)
         {
             _eventQueue = new EventQueue();

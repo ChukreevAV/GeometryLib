@@ -47,11 +47,11 @@ namespace GeometryLib.Intersections
         {
             var p1 = left.GetPointByY(p.Y);
             var p2 = test.GetPointByY(p.Y);
-            return p1.X < p2.X;
+            return p2.X > p1.X;
         }
 
         /// <summary>Конструктор</summary>
-        public StateNode() { }
+        public StateNode() {}
 
         /// <summary>Конструктор</summary>
         /// <param name="parent">Родитель</param>

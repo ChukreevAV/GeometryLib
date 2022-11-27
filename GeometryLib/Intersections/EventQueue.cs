@@ -24,15 +24,8 @@ namespace GeometryLib.Intersections
         public void AddEvent(Point2d p, Line2d line)
         {
             var even = Tree.Find(p);
-            if (even == null)
-            {
-                even = new SweepEvent(p, line);
-                Tree.Add(p, even);
-            }
-            else
-            {
-                even.Add(line);
-            }
+            if (even == null) Tree.Add(p, new SweepEvent(p, line));
+            else even.Add(line);
         }
 
         /// <summary>Добавить событие</summary>
