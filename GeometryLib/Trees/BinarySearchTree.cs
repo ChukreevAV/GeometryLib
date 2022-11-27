@@ -1,6 +1,6 @@
 ﻿using GeometryLib.Geometry;
 
-namespace GeometryLib
+namespace GeometryLib.Trees
 {
     /// <summary>Двоичное дерево поиска по точкам</summary>
     /// <typeparam name="T">Тип данных</typeparam>
@@ -24,11 +24,11 @@ namespace GeometryLib
         public T? Find(Point2d k) => Root?.Find(k) ?? default;
 
         /// <summary>Получаем крайне левый узел</summary>
-        /// <returns></returns>
+        /// <returns>Узел</returns>
         public BstNode<T>? GetLeft() => Root?.GetLeft();
 
         /// <summary>Получаем крайне правый узел</summary>
-        /// <returns></returns>
+        /// <returns>Узел</returns>
         public BstNode<T>? GetRight() => Root?.GetRight();
 
         /// <summary>Признак пустого дерева</summary>

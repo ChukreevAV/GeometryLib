@@ -1,4 +1,5 @@
 ﻿using GeometryLib.Geometry;
+using GeometryLib.Trees;
 
 namespace GeometryLib.Intersections
 {

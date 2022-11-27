@@ -1,6 +1,6 @@
 ﻿using GeometryLib.Geometry;
 
-namespace GeometryLib
+namespace GeometryLib.Trees
 {
     /// <summary>Узел дерева <see cref="BinarySearchTree{T}"/></summary>
     /// <typeparam name="T"></typeparam>
@@ -82,8 +82,7 @@ namespace GeometryLib
                 if (Left == null || Right == null)
                 {
                     var m = Left ?? Right;
-                    if (m == null) 
-                        throw new Exception("Почему то m = null");
+                    if (m == null) throw new Exception("Почему то m = null");
                     Key = m.Key;
                     Value = m.Value;
                     Left = m.Left;
