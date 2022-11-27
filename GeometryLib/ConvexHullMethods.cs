@@ -20,19 +20,19 @@ namespace GeometryLib
                     if (Equals(p1, p2)) continue;
                     var line1 = new Line2d(p1, p2);
                     var bAdd = true;
-                    foreach (var d1 in 
+                    foreach (var distance in 
                              from p3 in ps 
                              where !Equals(p3, p1) && !Equals(p3, p2) 
                              select line1.Distance(p3))
                     {
                         if (sign == null)
                         {
-                            sign = d1 >= 0; //TODO ==0!!!
+                            sign = distance >= 0; //TODO ==0!!!
                         }
                         else
                         {
-                            if ((d1 < 0 && sign == true) ||
-                                (d1 >= 0 && sign == false))
+                            if ((distance < 0 && sign == true) ||
+                                (distance >= 0 && sign == false))
                             {
                                 bAdd = false;
                             }
@@ -45,7 +45,7 @@ namespace GeometryLib
             return hull;
         }
 
-        /// <summary></summary>
+        /// <summary>Получить угол между тремя точками</summary>
         /// <param name="p1"></param>
         /// <param name="p2"></param>
         /// <param name="p3"></param>
@@ -59,6 +59,22 @@ namespace GeometryLib
             return a2 - a1;
         }
 
+        private static void MakeHalfHull(List<Point2d> list, Func<double, bool> func)
+        {
+            var b1 = true;
+            do
+            {
+                var c2 = list.Count;
+                var ang = GetAngle(list[c2 - 3], list[c2 - 2], list[c2 - 1]);
+                if (func(ang))
+                {
+                    list.Remove(list[c2 - 2]);
+                    if (list.Count <= 2) b1 = false;
+                }
+                else b1 = false;
+            } while (b1);
+        }
+
         /// <summary>Поиск выпуклой оболочки</summary>
         /// <param name="ps">Список точек</param>
         /// <returns>Точки выпуклой оболочки</returns>
@@ -68,19 +84,7 @@ namespace GeometryLib
             for (var i = 2; i < ps.Count; i++)
             {
                 upHull.Add(ps[i]);
-                var b1 = true;
-                do
-                {
-                    var c2 = upHull.Count;
-                    var ang = 
-                        GetAngle(upHull[c2 - 3], upHull[c2 - 2], upHull[c2 - 1]);
-                    if (ang < Math.PI)
-                    {
-                        upHull.Remove(upHull[c2 - 2]);
-                        if (upHull.Count <= 2) b1 = false;
-                    }
-                    else b1 = false;
-                } while (b1);
+                MakeHalfHull(upHull, ang => ang < Math.PI);
             }
 
             var c3 = ps.Count;
@@ -89,19 +93,7 @@ namespace GeometryLib
             for (var i = c3 - 3; i >= 0; i--)
             {
                 lowHull.Add(ps[i]);
-                var b1 = true;
-                do
-                {
-                    var c2 = lowHull.Count;
-                    var ang = Math.Abs(
-                        GetAngle(lowHull[c2 - 3], lowHull[c2 - 2], lowHull[c2 - 1]));
-                    if (ang > Math.PI)
-                    {
-                        lowHull.Remove(lowHull[c2 - 2]);
-                        if (lowHull.Count <= 2) b1 = false;
-                    }
-                    else b1 = false;
-                } while (b1);
+                MakeHalfHull(lowHull, ang => Math.Abs(ang) > Math.PI);
             }
 
             var sp = lowHull[0];

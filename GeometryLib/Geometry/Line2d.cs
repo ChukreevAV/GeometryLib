@@ -31,11 +31,7 @@
         /// <returns></returns>
         public Point2d First()
         {
-            if (Start.Y == End.Y)
-            {
-                return Start.X < End.X ? Start : End;
-            }
-
+            if (Start.Y == End.Y) return Start.X < End.X ? Start : End;
             return Start.Y < End.Y ? Start : End;
         }
 
@@ -43,15 +39,11 @@
         /// <returns></returns>
         public Point2d Last()
         {
-            if (Start.Y == End.Y)
-            {
-                return Start.X > End.X ? Start : End;
-            }
-
+            if (Start.Y == End.Y) return Start.X > End.X ? Start : End;
             return Start.Y > End.Y ? Start : End;
         }
 
-        private double GetX(double y) => (-B * y - C) / A;
+        public double GetX(double y) => (-B * y - C) / A;
 
         public Point2d GetPointByY(double y) => new (GetX(y), y);
 
@@ -88,10 +80,7 @@
         /// <summary>Точка "принадлежит" отрезку</summary>
         /// <param name="p"></param>
         /// <returns></returns>
-        public bool Contain(Point2d p)
-        {
-            return Math.Abs(Distance(p)) < Point2d.Epsilon;
-        }
+        public bool Contain(Point2d p) => Math.Abs(Distance(p)) < Point2d.Epsilon;
 
         /// <summary>Точка "внутри" отрезка</summary>
         /// <param name="p"></param>

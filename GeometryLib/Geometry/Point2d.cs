@@ -54,18 +54,16 @@ namespace GeometryLib.Geometry
         public double Distance(Point2d p)
             => Math.Sqrt(Math.Pow(X - p.X, 2) + Math.Pow(Y - p.Y, 2));
 
+        /// <inheritdoc/>
         public override int GetHashCode()
         {
             return X.GetHashCode() + Y.GetHashCode();
         }
 
+        /// <inheritdoc/>
         public override bool Equals(object? obj)
         {
-            if (obj is Point2d tp)
-            {
-                return Distance(tp) < Epsilon;
-            }
-
+            if (obj is Point2d tp) return Distance(tp) < Epsilon;
             return false;
         }
 
@@ -82,11 +80,15 @@ namespace GeometryLib.Geometry
         }
 
         /// <inheritdoc/>
-        public override string ToString()
-        {
-            //return X.ToString(CultureInfo.InvariantCulture) + " " + Y.ToString(CultureInfo.InvariantCulture);
-            return X.ToString("F4") + " " + Y.ToString("F4");
-        }
+        public override string ToString() => X.ToString(CultureInfo.InvariantCulture) + " " +
+                                             Y.ToString(CultureInfo.InvariantCulture);
+        //X.ToString("F4") + " " + Y.ToString("F4");
+
+        /// <summary>Строковое представления для хранения</summary>
+        /// <returns></returns>
+        public string ToInvariantCultureString() 
+            => X.ToString(CultureInfo.InvariantCulture) + " " + 
+               Y.ToString(CultureInfo.InvariantCulture);
 
         public static Vector2d operator +(Point2d a, Point2d b)
             => new(a.X + b.X, a.Y + b.Y);
