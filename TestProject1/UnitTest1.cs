@@ -2,61 +2,13 @@ using GeometryLib;
 using GeometryLib.Geometry;
 using GeometryLib.Intersections;
 using GeometryLib.Trees;
-using System.Globalization;
+
 using System.Text;
-using System.Text.RegularExpressions;
 
 namespace TestProject1
 {
     [TestClass] public class UnitTest1
     {
-        /// <summary>Создаём список случайных точек в квадрате 0-1</summary>
-        /// <param name="count">Количество точек</param>
-        /// <returns>Список точек в 0-1</returns>
-        public static List<Point2d> GetRandomPoint2ds(int count)
-        {
-            var random = new Random();
-            var list1 = new List<Point2d>();
-            for (var i = 0; i < count; i++)
-            {
-                list1.Add(new Point2d(
-                    random.NextDouble(),
-                    random.NextDouble()
-                ));
-            }
-
-            return list1;
-        }
-
-        [TestCategory("ConvexHull"), TestMethod] public void TestSlowConvexHull()
-        {
-            var list1 = GetRandomPoint2ds(33);
-            Assert.IsTrue(list1.Count == 33, "Get Points");
-            var scr = new AutoCadScript();
-            scr.AddPoints(list1);
-            list1.Sort();
-
-            var hull = ConvexHullMethods.SlowConvexHull(list1);
-            Assert.IsTrue(hull.Count > 2, "Get hull");
-            scr.AddLines(hull);
-            scr.WriteFile(@"F:\work\TestSlowConvexHull.scr");
-        }
-
-        [TestCategory("ConvexHull"), TestMethod] public void TestConvexHull1()
-        {
-            var pointsCount = 33;
-            var list1 = GetRandomPoint2ds(pointsCount);
-            Assert.IsTrue(list1.Count == pointsCount, "Get Points");
-            var scr = new AutoCadScript();
-            scr.AddPoints(list1);
-            list1.Sort();
-         
-            var hull = ConvexHullMethods.ConvexHull(list1);
-            Assert.IsTrue(hull.Count > 2, "Get hull");
-            scr.AddPolyline(hull);
-            scr.WriteFile(@"F:\work\TestConvexHull1.scr");
-        }
-
         [TestCategory("Geometry"), TestMethod] public void TestIntersect1()
         {
             var sp1 = new Point2d(-1, 0);
@@ -105,7 +57,7 @@ namespace TestProject1
 
         [TestCategory("Geometry"), TestMethod] public void TestCreateLines()
         {
-            var list1 = GetRandomPoint2ds(30);
+            var list1 = GetSampleData.GetRandomPoint2ds(30);
             var lines = new List<Line2d>();
             for (var i = 0; i < 15; i+=2)
             {
@@ -125,35 +77,6 @@ namespace TestProject1
             scr.WriteFile(@"F:\work\lines3.scr");
         }
 
-        private const string Pattern = "(?<x1>\\d+\\.\\d+) (?<y1>\\d+\\.\\d+);(?<x2>\\d+\\.\\d+) (?<y2>\\d+\\.\\d+)";
-        private static readonly Regex RegexLine = new (Pattern);
-
-        public static Line2d? ParseLine(string text)
-        {
-            if (!RegexLine.IsMatch(text)) return null;
-            var m = RegexLine.Match(text);
-            var x1 = double.Parse(m.Groups["x1"].Value, CultureInfo.InvariantCulture);
-            var y1 = double.Parse(m.Groups["y1"].Value, CultureInfo.InvariantCulture);
-            var x2 = double.Parse(m.Groups["x2"].Value, CultureInfo.InvariantCulture);
-            var y2 = double.Parse(m.Groups["y2"].Value, CultureInfo.InvariantCulture);
-            return new Line2d(x1, y1, x2, y2);
-        }
-
-        /// <summary>Читаем список линий из файла</summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        public static List<Line2d> ReadLines(string path)
-        {
-            var strings = File.ReadAllLines(path);
-            var list = new List<Line2d>();
-            foreach (var line in strings.Select(ParseLine))
-            {
-                if (line != null) list.Add(line);
-            }
-
-            return list;
-        }
-
         [TestCategory("StateNode"), TestMethod] public void TestStateNodeAdd()
         {
             var strings = File.ReadAllLines(@"F:\work\lines1.txt");
@@ -161,7 +84,7 @@ namespace TestProject1
             var root = new StateNode();
             foreach (var str in strings)
             {
-                var line = ParseLine(str);
+                var line = LoadData.ParseLine(str);
                 if (line == null) continue;
                 lines.Add(line);
                 root.Add(line.First(), line);
@@ -183,7 +106,7 @@ namespace TestProject1
 
         [TestCategory("Bst"), TestMethod] public void TestBstNodeFind()
         {
-            var list1 = GetRandomPoint2ds(9);
+            var list1 = GetSampleData.GetRandomPoint2ds(9);
             BstNode<Point2d>? root = null;
 
             foreach (var p in list1)
@@ -201,7 +124,7 @@ namespace TestProject1
 
         [TestCategory("Bst"), TestMethod] public void TestBinarySearchTreeRemove()
         {
-            var list1 = GetRandomPoint2ds(19);
+            var list1 = GetSampleData.GetRandomPoint2ds(19);
             var bst = new BinarySearchTree<Point2d>();
 
             foreach (var p in list1)
@@ -233,7 +156,7 @@ namespace TestProject1
 
         [TestCategory("StateNode"), TestMethod] public void TestStateNodeRemove()
         {
-            var lines = ReadLines(@"F:\work\lines2.txt");
+            var lines = LoadData.ReadLines(@"F:\work\lines2.txt");
             var tree = new StateNode();
             foreach (var line in lines)
             {
@@ -250,7 +173,7 @@ namespace TestProject1
 
         [TestCategory("StateNode"), TestMethod] public void TestStateNodeFind()
         {
-            var lines = ReadLines(@"F:\work\lines2.txt");
+            var lines = LoadData.ReadLines(@"F:\work\lines2.txt");
             var tree = new StateNode();
             foreach (var line in lines)
             {
@@ -268,7 +191,7 @@ namespace TestProject1
         [TestCategory("StateNode"), TestMethod]
         public void TestStateNodeFind2()
         {
-            var lines = ReadLines(@"F:\work\lines1.txt");
+            var lines = LoadData.ReadLines(@"F:\work\lines1.txt");
             var tree = new StateNode();
             foreach (var line in lines)
             {
@@ -283,7 +206,7 @@ namespace TestProject1
         [TestCategory("IntersectionsMethods"), TestMethod]
         public void TestFindIntersections1()
         {
-            var lines = ReadLines(@"F:\work\lines1.txt");
+            var lines = LoadData.ReadLines(@"F:\work\lines1.txt");
             var i = new IntersectionsMethods();
             var r = i.FindIntersections(lines);
             Assert.IsTrue(r.Any());
@@ -291,7 +214,7 @@ namespace TestProject1
 
         [TestCategory("EventQueue"), TestMethod] public void TestEventQueue1()
         {
-            var lines = ReadLines(@"F:\work\lines1.txt");
+            var lines = LoadData.ReadLines(@"F:\work\lines1.txt");
             var eventQueue = new EventQueue();
             var eList = new List<SweepEvent?>();
 
@@ -310,7 +233,7 @@ namespace TestProject1
 
         [TestMethod] public void TestMethod1()
         {
-            var lines = ReadLines(@"F:\work\lines1.txt");
+            var lines = LoadData.ReadLines(@"F:\work\lines1.txt");
             var l3 = lines[3];
             var l4 = lines[4];
             var p1 = new Point2d(0.36988774764577725, 0.5687411345076795);

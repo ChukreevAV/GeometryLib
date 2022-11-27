@@ -11,38 +11,13 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using GeometryLib;
 
 namespace Viewer2d
 {
     /// <summary>Логика взаимодействия для LinesView.xaml</summary>
     public partial class LinesView
     {
-        private static readonly string Pattern = "(?<x1>\\d+\\.\\d+) (?<y1>\\d+\\.\\d+);(?<x2>\\d+\\.\\d+) (?<y2>\\d+\\.\\d+)";
-        private static Regex regexLine = new(Pattern);
-
-        public static Line2d? ParseLine(string text)
-        {
-            if (!regexLine.IsMatch(text)) return null;
-            var m = regexLine.Match(text);
-            var x1 = double.Parse(m.Groups["x1"].Value, CultureInfo.InvariantCulture);
-            var y1 = double.Parse(m.Groups["y1"].Value, CultureInfo.InvariantCulture);
-            var x2 = double.Parse(m.Groups["x2"].Value, CultureInfo.InvariantCulture);
-            var y2 = double.Parse(m.Groups["y2"].Value, CultureInfo.InvariantCulture);
-            return new Line2d(x1, y1, x2, y2);
-        }
-
-        public static List<Line2d> ReadLines(string path)
-        {
-            var strings = File.ReadAllLines(path);
-            var list = new List<Line2d>();
-            foreach (var line in strings.Select(ParseLine))
-            {
-                if (line != null) list.Add(line);
-            }
-
-            return list;
-        }
-
         private double _scale1 = 400;
 
         public void DrawLine(Line2d line2d, Brush brush)
@@ -80,7 +55,7 @@ namespace Viewer2d
 
         private int _position = 0;
 
-        private List<Line2d> _lines = ReadLines(@"F:\work\lines2.txt");
+        private List<Line2d> _lines = LoadData.ReadLines(@"F:\work\lines2.txt");
         private StateNode _tree;
 
         private void OnTimedEvent(object? sender, EventArgs e)
