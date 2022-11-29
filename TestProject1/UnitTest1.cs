@@ -254,6 +254,34 @@ namespace TestProject1
 
         [TestMethod] public void TestMethod3()
         {
+            var list1 = new List<Point2d>
+            {
+                new(1, 1),
+                new(1, 2),
+                new(2, 2),
+                new(2, 1),
+            };
+
+            var sub1 = new Subdivision();
+            var f1 = sub1.AddFace(list1);
+            f1.Reverse();
+            Assert.IsNotNull(f1, "good");
+        }
+
+        [TestMethod] public void TestMethod4()
+        {
+            var p1 = new Point2d(2, 1);
+            var p2 = new Point2d(1, 1);
+            var p3 = new Point2d(1, 2);
+            var p4 = new Point2d(1, -2);
+            var a1 = Point2d.Counterclockwise(p1, p2, p3);
+            var a2 = Point2d.Counterclockwise(p1, p2, p4);
+            Assert.IsTrue(a1 < 0, "good");
+            Assert.IsTrue(a2 > 0, "good");
+        }
+
+        [TestMethod] public void TestMethod5()
+        {
 
         }
     }

@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Drawing;
+using System.Globalization;
 
 namespace GeometryLib.Geometry
 {
@@ -54,11 +55,11 @@ namespace GeometryLib.Geometry
         public double Distance(Point2d p)
             => Math.Sqrt(Math.Pow(X - p.X, 2) + Math.Pow(Y - p.Y, 2));
 
+        public static double Counterclockwise(Point2d a, Point2d b, Point2d c) 
+            => (b.X - a.X) * (c.Y - a.Y) - (c.X - a.X) * (b.Y - a.Y);
+
         /// <inheritdoc/>
-        public override int GetHashCode()
-        {
-            return X.GetHashCode() + Y.GetHashCode();
-        }
+        public override int GetHashCode() => X.GetHashCode() + Y.GetHashCode();
 
         /// <inheritdoc/>
         public override bool Equals(object? obj)
