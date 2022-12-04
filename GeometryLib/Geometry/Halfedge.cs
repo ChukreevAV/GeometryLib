@@ -1,6 +1,4 @@
-﻿using static System.Net.Mime.MediaTypeNames;
-
-namespace GeometryLib.Geometry
+﻿namespace GeometryLib.Geometry
 {
     public class HalfEdge
     {
@@ -64,5 +62,8 @@ namespace GeometryLib.Geometry
         }
 
         public Vertex? End => Twin?.Origin;
+
+        public bool IsEquals(Vertex sv, Vertex ev) 
+            => Origin == sv && End == ev;
     }
 }

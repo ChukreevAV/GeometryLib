@@ -8,11 +8,6 @@ namespace GeometryLib.Geometry
 
         public List<HalfEdge> Inner { get; set; } = new();
 
-        public Face()
-        {
-            //
-        }
-
         public void Reverse()
         {
             Outher?.Reverse();

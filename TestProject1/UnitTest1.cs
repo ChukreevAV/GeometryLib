@@ -264,7 +264,10 @@ namespace TestProject1
 
             var sub1 = new Subdivision();
             var f1 = sub1.AddFace(list1);
-            f1.Reverse();
+            f1?.Reverse();
+
+            var sub2 = sub1.Copy();
+
             Assert.IsNotNull(f1, "good");
         }
 
@@ -281,6 +284,33 @@ namespace TestProject1
         }
 
         [TestMethod] public void TestMethod5()
+        {
+            var list1 = new List<Point2d>
+            {
+                new(1, 1),
+                new(1, 2),
+                new(2, 2),
+                new(2, 1),
+            };
+
+            var list2 = new List<Point2d>
+            {
+                new(1.5, 0.5),
+                new(2.5, 0.5),
+                new(2.5, 1.5),
+                new(1.5, 1.5),
+            };
+
+            var sub1 = new Subdivision();
+            var sub2 = new Subdivision();
+            var f1 = sub1.AddFace(list1);
+            var f2 = sub2.AddFace(list2);
+
+            sub1.Add(sub2);
+        }
+
+
+        [TestMethod] public void TestMethod6()
         {
 
         }

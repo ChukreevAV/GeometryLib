@@ -7,7 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeometryLib", "GeometryLib\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestProject1", "TestProject1\TestProject1.csproj", "{3B8B18B8-6309-49ED-8FD6-4C2764379C72}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Viewer2d", "Viewer2d\Viewer2d.csproj", "{8B291975-B995-4781-A440-B39E7BFD7961}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Viewer2d", "Viewer2d\Viewer2d.csproj", "{8B291975-B995-4781-A440-B39E7BFD7961}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplication1", "WebApplication1\WebApplication1.csproj", "{0BEF3D00-E41A-41A4-B01B-E73BCD01513F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{8B291975-B995-4781-A440-B39E7BFD7961}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8B291975-B995-4781-A440-B39E7BFD7961}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8B291975-B995-4781-A440-B39E7BFD7961}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0BEF3D00-E41A-41A4-B01B-E73BCD01513F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0BEF3D00-E41A-41A4-B01B-E73BCD01513F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0BEF3D00-E41A-41A4-B01B-E73BCD01513F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0BEF3D00-E41A-41A4-B01B-E73BCD01513F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
