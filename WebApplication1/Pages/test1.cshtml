@@ -1,0 +1,45 @@
+﻿@page
+@using System.Globalization
+@model WebApplication1.Pages.test1Model
+@{
+}
+
+<h3 onclick="myFunction(this, 'red')">Click me to change my color.</h3>
+
+<div class="text-center">
+    <p>Test2</p>
+</div>
+
+<table>
+    <tr>
+        <th scope="col">
+            <table class="table mt-5">
+                <thead>
+                    <tr>
+                        <th scope="col">X</th>
+                        <th scope="col">Y</th>
+                    </tr>
+                </thead>
+                @foreach (var pizza in Model.Points)
+                {
+                    <tr id=@($"tr{@pizza.GetHashCode()}") onclick="selectPoint(@pizza.GetHashCode())">
+                        <td>@pizza.X.ToString("F4", CultureInfo.InvariantCulture)</td>
+                        <td>@pizza.Y.ToString("F4", CultureInfo.InvariantCulture)</td>
+                    </tr>
+                }
+            </table>
+        </th>
+        <th>
+            <svg width="600" viewBox="0 0 1 1" xmlns="http://www.w3.org/2000/svg">
+
+                @foreach (var pizza in Model.Points)
+                {
+                    <circle id=@($"cir{@pizza.GetHashCode()}") 
+                            cx=@Model.Scale(pizza.X) cy=@Model.Scale(pizza.Y) r="0.005"
+                        onclick="selectPoint(@pizza.GetHashCode())" fill="blue" />
+                }
+
+            </svg>
+        </th>
+    </tr>
+</table>
