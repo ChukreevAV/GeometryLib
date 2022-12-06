@@ -1,45 +1,56 @@
 using GeometryLib.Geometry;
 
-using Microsoft.AspNetCore.Components;
-
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 using System.Globalization;
 
+using WebApplication1.Services;
+
 namespace WebApplication1.Pages
 {
-    public class test1Model : PageModel
+    public class Test1Model : PageModel
     {
-        public static List<Point2d> GetRandomPoint2ds(int count)
-        {
-            var random = new Random();
-            var list1 = new List<Point2d>();
-            for (var i = 0; i < count; i++)
-            {
-                list1.Add(new Point2d(
-                    random.NextDouble(),
-                    random.NextDouble()
-                ));
-            }
+        private IDataService _dataService;
 
-            return list1;
+        public List<Point2d> Points { get; set; } = new();
+
+        public Test1Model(IDataService dataService)
+        {
+            _dataService = dataService;
+
+            var ps = _dataService.GetPoints();
+            ps = ps
+                .OrderBy(p => p.Y)
+                .ThenBy(p => p.X)
+                .ToList();
+
+            Points.AddRange(ps);
         }
 
-        public List<Point2d> Points { get; set; }
+        public string Scale(double d) => d.ToString(CultureInfo.InvariantCulture);
 
-        public string Scale(double d)
+        public void OnGet()
         {
-            return (d).ToString(CultureInfo.InvariantCulture);
         }
 
-        public void OnCircleClick(ChangeEventArgs e)
+        public void CreateNewPoints()
         {
-            //return null;
+            var ps = _dataService.GetNewPoints();
+            ps = ps
+                .OrderBy(p => p.Y)
+                .ThenBy(p => p.X)
+                .ToList();
+
+            Points.Clear();
+            Points.AddRange(ps);
         }
 
-       public void OnGet()
+
+        public IActionResult OnPost()
         {
-            Points = GetRandomPoint2ds(20);
+            CreateNewPoints();
+            return RedirectToAction("Get");
         }
     }
 }

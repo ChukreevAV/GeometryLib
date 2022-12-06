@@ -1,14 +1,16 @@
 ﻿@page
 @using System.Globalization
-@model WebApplication1.Pages.test1Model
+@model WebApplication1.Pages.Test1Model
 @{
 }
 
-<h3 onclick="myFunction(this, 'red')">Click me to change my color.</h3>
-
 <div class="text-center">
-    <p>Test2</p>
+    <p>Случайные точки</p>
 </div>
+
+<form method="post">
+    <button >New Points</button>
+</form>
 
 <table>
     <tr>
@@ -34,9 +36,10 @@
 
                 @foreach (var pizza in Model.Points)
                 {
-                    <circle id=@($"cir{@pizza.GetHashCode()}") 
-                            cx=@Model.Scale(pizza.X) cy=@Model.Scale(pizza.Y) r="0.005"
-                        onclick="selectPoint(@pizza.GetHashCode())" fill="blue" />
+                    <circle id=@($"cir{@pizza.GetHashCode()}")
+                            cx=@pizza.X.ToString(CultureInfo.InvariantCulture) 
+                            cy=@pizza.Y.ToString(CultureInfo.InvariantCulture)
+                            r="0.005" onclick="selectPoint(@pizza.GetHashCode())" fill="blue" />
                 }
 
             </svg>
