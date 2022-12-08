@@ -1,6 +1,6 @@
 ﻿using GeometryLib.Geometry;
 
-namespace GeometryLib
+namespace GeometryLib.ConvexHull
 {
     public static class ConvexHullMethods
     {
@@ -20,9 +20,9 @@ namespace GeometryLib
                     if (Equals(p1, p2)) continue;
                     var line1 = new Line2d(p1, p2);
                     var bAdd = true;
-                    foreach (var distance in 
-                             from p3 in ps 
-                             where !Equals(p3, p1) && !Equals(p3, p2) 
+                    foreach (var distance in
+                             from p3 in ps
+                             where !Equals(p3, p1) && !Equals(p3, p2)
                              select line1.Distance(p3))
                     {
                         if (sign == null)
@@ -31,8 +31,8 @@ namespace GeometryLib
                         }
                         else
                         {
-                            if ((distance < 0 && sign == true) ||
-                                (distance >= 0 && sign == false))
+                            if (distance < 0 && sign == true ||
+                                distance >= 0 && sign == false)
                             {
                                 bAdd = false;
                             }

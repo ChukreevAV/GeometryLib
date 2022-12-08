@@ -1,0 +1,86 @@
+﻿@page
+@using System.Globalization
+@model WebApplication1.Pages.ConvexHullViewModel
+@{
+}
+
+<div class="text-center">
+    <p>Выпуклая оболочка</p>
+</div>
+
+<form method="post">
+    <button>Next</button>
+</form>
+
+<svg width="600" viewBox="0 0 1 1" xmlns="http://www.w3.org/2000/svg">
+
+    @foreach (var point in Model.Points)
+    {
+        <circle id=@($"cir{point.GetHashCode()}")
+            cx=@point.X.ToString(CultureInfo.InvariantCulture)
+            cy=@point.Y.ToString(CultureInfo.InvariantCulture)
+            r="0.005" onclick="selectPoint(@point.GetHashCode())" fill="blue" />
+    }
+    
+    @foreach (var point in Model.SelectPoints)
+    {
+        <circle id=@($"cir{point.GetHashCode()}")
+                cx=@point.X.ToString(CultureInfo.InvariantCulture)
+                cy=@point.Y.ToString(CultureInfo.InvariantCulture)
+            r="0.005" onclick="selectPoint(@point.GetHashCode())" fill="rgb(111,111,111)" />
+    }
+
+    <line x1=@Model.CurrentLine?.Start.X.ToString(CultureInfo.InvariantCulture)
+          y1=@Model.CurrentLine?.Start.Y.ToString(CultureInfo.InvariantCulture)
+          x2=@Model.CurrentLine?.End.X.ToString(CultureInfo.InvariantCulture)
+          y2=@Model.CurrentLine?.End.Y.ToString(CultureInfo.InvariantCulture)
+          style="stroke:rgb(255,0,0);stroke-width:0.005" />
+
+    @foreach (var line in Model.UnselectLines)
+    {
+        <line x1=@line.Start.X.ToString(CultureInfo.InvariantCulture)
+          y1=@line.Start.Y.ToString(CultureInfo.InvariantCulture)
+          x2=@line.End.X.ToString(CultureInfo.InvariantCulture)
+          y2=@line.End.Y.ToString(CultureInfo.InvariantCulture)
+          style="stroke:rgb(111,111,111);stroke-width:0.005" />
+    }
+
+    @foreach (var line in Model.Lines)
+    {
+        <line x1=@line.Start.X.ToString(CultureInfo.InvariantCulture)
+          y1=@line.Start.Y.ToString(CultureInfo.InvariantCulture)
+          x2=@line.End.X.ToString(CultureInfo.InvariantCulture)
+          y2=@line.End.Y.ToString(CultureInfo.InvariantCulture)
+          style="stroke:rgb(0,255,0);stroke-width:0.005" />
+    }
+
+</svg>
+
+<div class="text-center">
+    <p>Index1 - @Model.Index1; Index2 - @Model.Index2</p>
+</div>
+
+<table>
+    <tr>
+        <th scope="col">
+            <table class="table mt-5">
+                <thead>
+                    <tr>
+                        <th scope="col">X</th>
+                        <th scope="col">Y</th>
+                    </tr>
+                </thead>
+                @foreach (var point in Model.Points)
+                {
+                    <tr id=@($"tr{point.GetHashCode()}") onclick="selectPoint(@point.GetHashCode())">
+                        <td>@point.X.ToString("F4", CultureInfo.InvariantCulture)</td>
+                        <td>@point.Y.ToString("F4", CultureInfo.InvariantCulture)</td>
+                    </tr>
+                }
+            </table>
+        </th>
+        <th>
+
+        </th>
+    </tr>
+</table>

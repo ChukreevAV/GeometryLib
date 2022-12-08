@@ -6,6 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 
 builder.Services.AddSingleton<IDataService, DataService>();
+builder.Services.AddSingleton<ISlowConvexHullService, SlowConvexHull>();
 
 var app = builder.Build();
 
