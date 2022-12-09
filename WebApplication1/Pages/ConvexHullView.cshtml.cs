@@ -9,7 +9,6 @@ namespace WebApplication1.Pages
 {
     public class ConvexHullViewModel : PageModel
     {
-
         public List<Point2d> Points { get; set; } = new();
 
         public List<Point2d> SelectPoints { get; } = new();
@@ -20,9 +19,9 @@ namespace WebApplication1.Pages
 
         public Line2d? CurrentLine { get; set; }
 
-        public int Index1 { get; set; } = 0;
+        public int Index1 { get; set; }
 
-        public int Index2 { get; set; } = 0;
+        public int Index2 { get; set; }
 
         private readonly ISlowConvexHullService _convexHull;
 
