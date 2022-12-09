@@ -8,7 +8,7 @@ namespace WebApplication2.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class ConvexHullController : ControllerBase
+    public class SlowConvexHullController : ControllerBase
     {
         private static List<Point2d> GetRandomPoint2ds(int count)
         {
@@ -27,7 +27,7 @@ namespace WebApplication2.Controllers
 
         private readonly SlowConvexHullState _convexHull;
 
-        public ConvexHullController()
+        public SlowConvexHullController()
         {
             _convexHull = new SlowConvexHullState(GetRandomPoint2ds(20));
         }
