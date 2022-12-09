@@ -9,6 +9,8 @@
         /// <summary>Конечная точка</summary>
         public Point2d End { get; set; }
 
+        public Line2d() {}
+
         public Line2d(double x1, double y1, double x2, double y2)
         {
             Start = new Point2d(x1, y1);

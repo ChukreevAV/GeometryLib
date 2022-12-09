@@ -10,7 +10,7 @@ namespace WebApplication2.Controllers
     [Route("[controller]")]
     public class ConvexHullController : ControllerBase
     {
-        public static List<Point2d> GetRandomPoint2ds(int count)
+        private static List<Point2d> GetRandomPoint2ds(int count)
         {
             var random = new Random();
             var list1 = new List<Point2d>();
@@ -41,49 +41,52 @@ namespace WebApplication2.Controllers
         [HttpPost]
         public async Task<ActionResult<SlowConvexHullState>> PostSlowConvexHullState(SlowConvexHullState chs)
         {
+            chs.selectPoints ??= new List<Point2d>();
+            chs.unselectLines ??= new List<Line2d>();
+            chs.convexHull ??= new List<Line2d>();
             Next(chs);
             return await new ValueTask<ActionResult<SlowConvexHullState>>(chs);
         }
 
         private void Next(SlowConvexHullState chs)
         {
-            if (chs.Index1 == chs.Index2) chs.Index2++;
-            var pCount = chs.Points.Count;
-            if (chs.Index2 >= pCount)
+            if (chs.index1 == chs.index2) chs.index2++;
+            var pCount = chs.points.Count;
+            if (chs.index2 >= pCount)
             {
-                chs.SelectPoints.Add(chs.Points[chs.Index1]);
-                chs.Index1++;
-                chs.Index2 = 0;
-                chs.UnselectLines.Clear();
+                chs.selectPoints.Add(chs.points[chs.index1]);
+                chs.index1++;
+                chs.index2 = 0;
+                chs.unselectLines.Clear();
             }
-            if (chs.Index1 >= pCount) return;
+            if (chs.index1 >= pCount) return;
             //
-            var p1 = chs.Points[chs.Index1];
-            var p2 = chs.Points[chs.Index2];
-            chs.CurrentLine = new Line2d(p1, p2);
+            var p1 = chs.points[chs.index1];
+            var p2 = chs.points[chs.index2];
+            chs.currentLine = new Line2d(p1, p2);
             var bAdd = true;
             foreach (var distance in
-                     from p3 in chs.Points
+                     from p3 in chs.points
                      where !Equals(p3, p1) && !Equals(p3, p2)
-                     select chs.CurrentLine.Distance(p3))
+                     select chs.currentLine.Distance(p3))
             {
-                if (chs.Sign == null)
+                if (chs.sign == null)
                 {
-                    chs.Sign = distance >= 0; //TODO ==0!!!
+                    chs.sign = distance >= 0; //TODO ==0!!!
                 }
                 else
                 {
-                    if (distance < 0 && chs.Sign == true ||
-                        distance >= 0 && chs.Sign == false)
+                    if (distance < 0 && chs.sign == true ||
+                        distance >= 0 && chs.sign == false)
                     {
                         bAdd = false;
                     }
                 }
             }
 
-            if (bAdd) chs.ConvexHull.Add(chs.CurrentLine);
-            else chs.UnselectLines.Add(chs.CurrentLine);
-            chs.Index2++;
+            if (bAdd) chs.convexHull.Add(chs.currentLine);
+            else chs.unselectLines.Add(chs.currentLine);
+            chs.index2++;
         }
     }
 }

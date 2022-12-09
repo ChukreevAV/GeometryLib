@@ -39,6 +39,8 @@ namespace GeometryLib.Geometry
             }
         }
 
+        public Point2d() {}
+
         /// <summary>Конструктор</summary>
         /// <param name="x">Координата X</param>
         /// <param name="y">Координата Y</param>
