@@ -29,7 +29,7 @@ namespace WebApplication2.Controllers
 
         public ConvexHullController()
         {
-            _convexHull = new SlowConvexHullState(GetRandomPoint2ds(30));
+            _convexHull = new SlowConvexHullState(GetRandomPoint2ds(20));
         }
 
         [HttpGet]
