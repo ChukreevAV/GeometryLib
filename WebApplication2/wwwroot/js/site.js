@@ -68,8 +68,18 @@ function contain(list, tp) {
     return false;
 }
 
+function write1() {
+    const canvas1 = document.getElementById("column1");
+    var test1 = "";
+    test1 += `index1 : ${_data.index1}\n`;
+    test1 += `index2 : ${_data.index2}\n`;
+    test1 += `sign : ${_data.sign}\n`;
+    canvas1.innerText = test1;
+}
+
 function _displayItems(data) {
     _data = data;
+    write1();
     if (data.selectPoints == null) data.selectPoints = [];
     const canvas1 = document.getElementById("canvas1");
     clear(canvas1);
