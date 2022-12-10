@@ -11,9 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Viewer2d", "Viewer2d\Viewer
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApplication1", "WebApplication1\WebApplication1.csproj", "{0BEF3D00-E41A-41A4-B01B-E73BCD01513F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplication2", "WebApplication2\WebApplication2.csproj", "{099889BC-D646-479F-927D-5A9024A9B0CE}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoAlgorithms", "DemoAlgorithms\DemoAlgorithms.csproj", "{992167C9-C36A-4A33-9DB4-151722DE9E7A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApplication2", "WebApplication2\WebApplication2.csproj", "{099889BC-D646-479F-927D-5A9024A9B0CE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,10 +39,6 @@ Global
 		{099889BC-D646-479F-927D-5A9024A9B0CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{099889BC-D646-479F-927D-5A9024A9B0CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{099889BC-D646-479F-927D-5A9024A9B0CE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{992167C9-C36A-4A33-9DB4-151722DE9E7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{992167C9-C36A-4A33-9DB4-151722DE9E7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{992167C9-C36A-4A33-9DB4-151722DE9E7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{992167C9-C36A-4A33-9DB4-151722DE9E7A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DemoAlgorithms\DemoAlgorithms.csproj" />
+    <ProjectReference Include="..\GeometryLib\GeometryLib.csproj" />
   </ItemGroup>
 
 </Project>

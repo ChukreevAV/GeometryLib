@@ -23,6 +23,21 @@ function createStyle(color) {
     return `stroke:${color};stroke-width:0.005`;
 }
 
+function createPath(points, stroke) {
+    const path = document.createElementNS(svgNameSpace, "path");
+    var pStr = "M";
+    points.forEach(p => pStr += `${p.x} ${p.y}`);
+    path.setAttributeNS(null, "d", pStr);
+    path.setAttributeNS(null, "stroke", stroke);
+    path.setAttributeNS(null, "stroke-width", 0.005);
+    path.setAttributeNS(null, "fill", "transparent");
+    return path;
+}
+
+function drawPath(points, stroke, canvas) {
+    if (points.length > 1) canvas.appendChild(createPath(points, stroke));
+}
+
 function drawPoint(p, color, canvas) {
     canvas.appendChild(createCircle(p.x, p.y, color));
 }

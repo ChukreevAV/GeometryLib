@@ -9,7 +9,7 @@ function getItems() {
 
 async function addItem() {
 
-    var response1 = await window.fetch(uri,
+    const response1 = await window.fetch(uri,
         {
             method: "POST",
             headers: {

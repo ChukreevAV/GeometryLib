@@ -1,6 +1,4 @@
-﻿using DemoAlgorithms.Algorithms;
-
-using GeometryLib.Geometry;
+﻿using GeometryLib.Geometry;
 
 namespace WebApplication2.Models
 {
@@ -34,26 +32,6 @@ namespace WebApplication2.Models
         {
             Points = new List<Point2d>();
             Points.AddRange(points);
-        }
-
-        public SlowConvexHullState(ISlowConvexHull convexHull)
-        {
-            Points = new List<Point2d>();
-            Points.AddRange(convexHull.Points);
-
-            SelectPoints = new List<Point2d>();
-            SelectPoints.AddRange(convexHull.SelectPoints);
-
-            UnselectLines = new List<Line2d>();
-            UnselectLines.AddRange(convexHull.UnselectLines);
-
-            ConvexHull = new List<Line2d>();
-            ConvexHull.AddRange(convexHull.ConvexHull);
-
-            Index1 = convexHull.Index1;
-            Index2 = convexHull.Index2;
-            Sign = convexHull.Sign;
-            CurrentLine = convexHull.CurrentLine;
         }
     }
 }
