@@ -59,7 +59,7 @@ namespace GeometryLib.ConvexHull
             return a2 - a1;
         }
 
-        private static void MakeHalfHull(List<Point2d> list, Func<double, bool> func)
+        private static void MakeHalfHull(IList<Point2d> list, Func<double, bool> func)
         {
             var b1 = true;
             do

@@ -12,7 +12,7 @@ namespace WebApplication2.Models
 
         public List<Line2d>? UnselectLines { get; set; }
 
-        public List<Line2d>? ConvexHull { get; set; } 
+        public List<Line2d>? ConvexHull { get; set; }
 
         public int Index1 { get; set; }
 
@@ -32,20 +32,23 @@ namespace WebApplication2.Models
 
         public SlowConvexHullState(IEnumerable<Point2d> points)
         {
-            this.Points = new List<Point2d>();
-            this.Points.AddRange(points);
+            Points = new List<Point2d>();
+            Points.AddRange(points);
         }
 
         public SlowConvexHullState(ISlowConvexHull convexHull)
         {
             Points = new List<Point2d>();
             Points.AddRange(convexHull.Points);
+
             SelectPoints = new List<Point2d>();
             SelectPoints.AddRange(convexHull.SelectPoints);
+
             UnselectLines = new List<Line2d>();
             UnselectLines.AddRange(convexHull.UnselectLines);
-            this.ConvexHull = new List<Line2d>();
-            this.ConvexHull.AddRange(convexHull.ConvexHull);
+
+            ConvexHull = new List<Line2d>();
+            ConvexHull.AddRange(convexHull.ConvexHull);
 
             Index1 = convexHull.Index1;
             Index2 = convexHull.Index2;

@@ -1,4 +1,5 @@
-﻿using GeometryLib.Geometry;
+﻿using GeometryLib;
+using GeometryLib.Geometry;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,36 +7,14 @@ using WebApplication2.Models;
 
 namespace WebApplication2.Controllers
 {
-    [ApiController]
-    [Route("[controller]")]
+    [ApiController, Route("[controller]")]
     public class SlowConvexHullController : ControllerBase
     {
-        private static IEnumerable<Point2d> GetRandomPoint2ds(int count)
-        {
-            var random = new Random();
-            var list1 = new List<Point2d>();
-            for (var i = 0; i < count; i++)
-            {
-                list1.Add(new Point2d(
-                    random.NextDouble(),
-                    random.NextDouble()
-                ));
-            }
-
-            return list1;
-        }
-
-        private readonly SlowConvexHullState _convexHull;
-
-        public SlowConvexHullController()
-        {
-            _convexHull = new SlowConvexHullState(GetRandomPoint2ds(20));
-        }
-
         [HttpGet]
         public async Task<ActionResult<SlowConvexHullState>> GetConvexHullStart()
         {
-            return await new ValueTask<ActionResult<SlowConvexHullState>>(_convexHull);
+            var convexHull = new SlowConvexHullState(Utils.GetRandomPoint2ds(20));
+            return await new ValueTask<ActionResult<SlowConvexHullState>>(convexHull);
         }
 
         [HttpPost]
@@ -48,7 +27,7 @@ namespace WebApplication2.Controllers
             return await new ValueTask<ActionResult<SlowConvexHullState>>(chs);
         }
 
-        private void Next(SlowConvexHullState chs)
+        private static void Next(SlowConvexHullState chs)
         {
             if (chs.Points == null) return;
             if (chs.Index1 == chs.Index2) chs.Index2++;
