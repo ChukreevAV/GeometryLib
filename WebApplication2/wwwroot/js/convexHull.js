@@ -48,4 +48,3 @@ function _displayItems(data) {
     if (_data.upConvexHull != null) drawPath(_data.upConvexHull, "red", canvas1);
     if (_data.downConvexHull != null) drawPath(_data.downConvexHull, "blue", canvas1);
 }
-

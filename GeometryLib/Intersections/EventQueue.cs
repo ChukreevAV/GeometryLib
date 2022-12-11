@@ -54,7 +54,7 @@ namespace GeometryLib.Intersections
             AddEvent(line.First(), line);
             AddEvent(line.Last());
         }
-        
+
         /// <summary>Получить следующее событие</summary>
         /// <returns></returns>
         public SweepEvent? GetNextEvent()
@@ -64,6 +64,18 @@ namespace GeometryLib.Intersections
             var ev = nn.Value;
             Tree.Remove(nn.Key);
             return ev;
+        }
+
+        public List<SweepEvent> GetList()
+        {
+            var list = new List<SweepEvent>();
+            while (!IsEmpty())
+            {
+                var ev = GetNextEvent();
+                if (ev != null) list.Add(ev);
+            }
+
+            return list;
         }
 
         /// <summary>Признак пустой очереди</summary>

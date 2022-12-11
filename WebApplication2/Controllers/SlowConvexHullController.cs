@@ -13,12 +13,13 @@ namespace WebApplication2.Controllers
         [HttpGet]
         public async Task<ActionResult<SlowConvexHullState>> GetConvexHullStart()
         {
-            var convexHull = new SlowConvexHullState(Utils.GetRandomPoint2ds(20));
+            var convexHull = new SlowConvexHullState(GetSampleData.GetRandomPoint2ds(20));
             return await new ValueTask<ActionResult<SlowConvexHullState>>(convexHull);
         }
 
         [HttpPost]
-        public async Task<ActionResult<SlowConvexHullState>> PostSlowConvexHullState(SlowConvexHullState chs)
+        public async Task<ActionResult<SlowConvexHullState>> 
+            PostSlowConvexHullState(SlowConvexHullState chs)
         {
             chs.SelectPoints ??= new List<Point2d>();
             chs.UnselectLines ??= new List<Line2d>();

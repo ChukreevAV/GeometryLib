@@ -13,7 +13,7 @@ namespace WebApplication2.Controllers
         [HttpGet]
         public async Task<ActionResult<ConvexHullState>> GetConvexHullStart()
         {
-            var convexHull = new ConvexHullState(Utils.GetRandomPoint2ds(20));
+            var convexHull = new ConvexHullState(GetSampleData.GetRandomPoint2ds(20));
             return await new ValueTask<ActionResult<ConvexHullState>>(convexHull);
         }
 
@@ -84,30 +84,6 @@ namespace WebApplication2.Controllers
                 MakeHalfHull(state.DownConvexHull, ang => Math.Abs(ang) > Math.PI);
                 state.Index2--;
             }
-        }
-
-       private static List<Point2d> ConvexHull(List<Point2d> ps)
-        {
-            var upHull = new List<Point2d> { ps[0], ps[1] };
-            for (var i = 2; i < ps.Count; i++)
-            {
-                upHull.Add(ps[i]);
-                MakeHalfHull(upHull, ang => ang < Math.PI);
-            }
-
-            var c3 = ps.Count;
-            var lowHull = new List<Point2d> { ps[c3 - 1], ps[c3 - 2] };
-
-            for (var i = c3 - 3; i >= 0; i--)
-            {
-                lowHull.Add(ps[i]);
-                MakeHalfHull(lowHull, ang => Math.Abs(ang) > Math.PI);
-            }
-
-            var sp = lowHull[0];
-            lowHull.Remove(sp);
-            upHull.AddRange(lowHull);
-            return upHull;
         }
     }
 }

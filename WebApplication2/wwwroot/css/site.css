@@ -1,0 +1,12 @@
+﻿body {
+}
+
+/* Keyword value/name of color */
+.div-1 {
+    background-color : white;
+}
+
+/* Hexadecimal value */
+.div-2 {
+    background-color : red;
+}

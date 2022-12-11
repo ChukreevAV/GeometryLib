@@ -1,4 +1,5 @@
-﻿using GeometryLib.ConvexHull;
+﻿using GeometryLib;
+using GeometryLib.ConvexHull;
 
 namespace TestProject1
 {

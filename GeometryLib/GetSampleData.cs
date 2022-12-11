@@ -2,7 +2,7 @@
 
 namespace GeometryLib
 {
-    public static class Utils
+    public static class GetSampleData
     {
         public static List<Point2d> GetRandomPoint2ds(int count)
         {
@@ -17,6 +17,19 @@ namespace GeometryLib
             }
 
             return list1;
+        }
+
+        public static List<Line2d> GetRandomLine2ds(int count)
+        {
+            var dCount = count * 2;
+            var list1 = GetRandomPoint2ds(dCount);
+            var lines = new List<Line2d>();
+            for (var i = 0; i < dCount - 1; i += 2)
+            {
+                lines.Add(new Line2d(list1[i], list1[i + 1]));
+            }
+
+            return lines;
         }
     }
 }

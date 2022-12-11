@@ -312,7 +312,8 @@ namespace TestProject1
 
         [TestMethod] public void TestMethod6()
         {
-
+            var lines = GetSampleData.GetRandomLine2ds(10);
+            Assert.IsTrue(lines.Count == 10);
         }
     }
 }
