@@ -206,7 +206,9 @@ namespace TestProject1
         [TestCategory("IntersectionsMethods"), TestMethod]
         public void TestFindIntersections1()
         {
-            var lines = LoadData.ReadLines(@"F:\work\lines1.txt");
+            var lines = LoadData.ReadLines(@"F:\work\lines1.txt")
+                .Cast<IEventLine>()
+                .ToList();
             var i = new IntersectionsMethods();
             var r = i.FindIntersections(lines);
             Assert.IsTrue(r.Any());

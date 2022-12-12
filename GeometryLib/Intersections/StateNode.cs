@@ -8,13 +8,13 @@ namespace GeometryLib.Intersections
         private StateNode? _parent;
 
         /// <summary>Ключевая линия</summary>
-        public Line2d? Line { get; set; }
+        public IEventLine? Line { get; set; }
 
         /// <summary>Левая линия</summary>
-        public Line2d? LeftLine { get; set; }
+        public IEventLine? LeftLine { get; set; }
 
         /// <summary>Правая линия</summary>
-        public Line2d? RightLine { get; set; }
+        public IEventLine? RightLine { get; set; }
 
         /// <summary>Левый узел</summary>
         public StateNode? LeftNode { get; set; }
@@ -32,7 +32,7 @@ namespace GeometryLib.Intersections
             return p.X > tp.X;
         }
 
-        private static double Distance(Line2d test, Point2d p)
+        private static double Distance(IEventLine test, Point2d p)
         {
             var tp = test.GetPointByY(p.Y);
             return tp.X - p.X;
@@ -43,7 +43,7 @@ namespace GeometryLib.Intersections
         /// <param name="left">Опорный отрезок</param>
         /// <param name="test">Проверяемый отрезок</param>
         /// <returns></returns>
-        private static bool IsRight(Point2d p, Line2d left, Line2d test)
+        private static bool IsRight(Point2d p, IEventLine left, IEventLine test)
         {
             var p1 = left.GetPointByY(p.Y);
             var p2 = test.GetPointByY(p.Y);
@@ -58,7 +58,7 @@ namespace GeometryLib.Intersections
         /// <param name="p">Точка на линии заметания</param>
         /// <param name="line1"></param>
         /// <param name="line2"></param>
-        public StateNode(StateNode parent, Point2d p, Line2d line1, Line2d line2)
+        public StateNode(StateNode parent, Point2d p, IEventLine line1, IEventLine line2)
         {
             _parent = parent;
             if (IsRight(p, line1, line2))
@@ -78,9 +78,9 @@ namespace GeometryLib.Intersections
         /// <summary>Поиск отрезков по точке</summary>
         /// <param name="p"></param>
         /// <returns></returns>
-        public List<Line2d> Find(Point2d p)
+        public List<IEventLine> Find(Point2d p)
         {
-            var rList = new List<Line2d>();
+            var rList = new List<IEventLine>();
 
             if (LeftLine?.Contain(p) == true) rList.Add(LeftLine);
             if (RightLine?.Contain(p) == true) rList.Add(RightLine);
@@ -94,7 +94,7 @@ namespace GeometryLib.Intersections
         /// <summary>Получаем левый отрезок через предка</summary>
         /// <param name="child">Дочерний узел</param>
         /// <returns>Левый отрезок</returns>
-        private Line2d? GetParentLeft(StateNode child)
+        private IEventLine? GetParentLeft(StateNode child)
         {
             if (RightNode == child) return LeftLine ?? LeftNode?.GetRight();
             return _parent?.GetParentLeft(this);
@@ -103,7 +103,7 @@ namespace GeometryLib.Intersections
         /// <summary>Получаем правый отрезок через предка</summary>
         /// <param name="child">Дочерний узел</param>
         /// <returns>Правый отрезок</returns>
-        private Line2d? GetParentRight(StateNode child)
+        private IEventLine? GetParentRight(StateNode child)
         {
             if (LeftNode == child) return RightLine ?? RightNode?.GetLeft();
             return _parent?.GetParentRight(this);
@@ -113,9 +113,9 @@ namespace GeometryLib.Intersections
         /// <param name="p">Точка на линии заметания</param>
         /// <param name="l">Заданный отрезок</param>
         /// <returns>Левый отрезок</returns>
-        public Line2d? FindLeft(Point2d p, Line2d l)
+        public IEventLine? FindLeft(Point2d p, IEventLine l)
         {
-            Line2d? result = null;
+            IEventLine? result = null;
 
             if (RightNode != null) result = RightNode.FindLeft(p, l);
             if (RightLine == l) result = LeftNode != null ? LeftNode.GetRight() : LeftLine;
@@ -132,9 +132,9 @@ namespace GeometryLib.Intersections
         /// <param name="p">Точка на линии заметания</param>
         /// <param name="l">Заданный отрезок</param>
         /// <returns>Правый отрезок</returns>
-        public Line2d? FindRight(Point2d p, Line2d l)
+        public IEventLine? FindRight(Point2d p, IEventLine l)
         {
-            Line2d? result = null;
+            IEventLine? result = null;
 
             if (RightNode != null) result = RightNode.FindRight(p, l);
             if (RightLine == l) result = _parent?.GetParentRight(this);
@@ -150,7 +150,7 @@ namespace GeometryLib.Intersections
         /// <summary>Получить крайне левый отрезок</summary>
         /// <param name="p">Точка на линии заметания</param>
         /// <returns>Крайне левый отрезок</returns>
-        public Line2d? FindLeft(Point2d p)
+        public IEventLine? FindLeft(Point2d p)
         {
             var ll = LeftNode != null ? LeftNode?.FindLeft(p) : LeftLine;
             var rl = RightNode != null ? RightNode?.FindLeft(p) : RightLine;
@@ -170,7 +170,7 @@ namespace GeometryLib.Intersections
         /// <param name="p">Точка на линии заметания</param>
         /// <returns>Крайне правый отрезок</returns>
 
-        public Line2d? FindRight(Point2d p)
+        public IEventLine? FindRight(Point2d p)
         {
             var ll = LeftNode != null ? LeftNode?.FindRight(p) : LeftLine;
             var rl = RightNode != null ? RightNode?.FindRight(p) : RightLine;
@@ -186,14 +186,14 @@ namespace GeometryLib.Intersections
             return d1 < d2 ? ll : rl;
         }
 
-        private Line2d? GetLeft() => LeftLine ?? LeftNode?.GetLeft();
+        private IEventLine? GetLeft() => LeftLine ?? LeftNode?.GetLeft();
 
-        private Line2d? GetRight() => RightLine ?? RightNode?.GetRight();
+        private IEventLine? GetRight() => RightLine ?? RightNode?.GetRight();
 
         /// <summary>Добавление отрезков в структуру</summary>
         /// <param name="eventPoint">Точка на линии заметания</param>
         /// <param name="lines">Отрезки для добавления</param>
-        public void Add(Point2d eventPoint, List<Line2d> lines)
+        public void Add(Point2d eventPoint, List<IEventLine> lines)
         {
             foreach (var line in lines)
             {
@@ -205,7 +205,7 @@ namespace GeometryLib.Intersections
         /// <summary>Добавление отрезка в структуру</summary>
         /// <param name="eventPoint">Точка на линии заметания</param>
         /// <param name="line">Отрезок для отопления</param>
-        public void Add(Point2d eventPoint, Line2d line)
+        public void Add(Point2d eventPoint, IEventLine line)
         {
             if (Line == null)
             {
@@ -243,7 +243,7 @@ namespace GeometryLib.Intersections
             }
         }
 
-        private void Replace(StateNode oldNode, Line2d? line)
+        private void Replace(StateNode oldNode, IEventLine? line)
         {
             if (RightNode == oldNode)
             {
@@ -275,7 +275,7 @@ namespace GeometryLib.Intersections
 
         /// <summary>Удалить отрезки</summary>
         /// <param name="lines">Список отрезков</param>
-        public void Remove(List<Line2d> lines)
+        public void Remove(List<IEventLine> lines)
         {
             foreach (var line in lines)
             {
@@ -283,7 +283,7 @@ namespace GeometryLib.Intersections
             }
         }
 
-        private void RemoveRight(Line2d line)
+        private void RemoveRight(IEventLine line)
         {
             if (RightLine == line)
             {
@@ -303,7 +303,7 @@ namespace GeometryLib.Intersections
             RightNode?.Remove(line);
         }
 
-        private void RemoveLeft(Line2d line)
+        private void RemoveLeft(IEventLine line)
         {
             if (LeftLine == line)
             {
@@ -340,7 +340,7 @@ namespace GeometryLib.Intersections
 
         /// <summary>Удалить отрезок</summary>
         /// <param name="line">Отрезок на удаление</param>
-        public void Remove(Line2d line)
+        public void Remove(IEventLine line)
         {
             if (Line == null) return;
 

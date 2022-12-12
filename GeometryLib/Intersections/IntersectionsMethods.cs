@@ -19,7 +19,7 @@ namespace GeometryLib.Intersections
         /// <param name="line">Отрезок</param>
         /// <param name="p">Точка</param>
         /// <returns>Положение точки</returns>
-        public static PointPosition GetPointPosition(Line2d line, Point2d p)
+        public static PointPosition GetPointPosition(IEventLine line, Point2d p)
         {
             if (p.Distance(line.First()) < Point2d.Epsilon) return PointPosition.Up;
             if (p.Distance(line.Last()) < Point2d.Epsilon) return PointPosition.Down;
@@ -34,7 +34,7 @@ namespace GeometryLib.Intersections
         /// <param name="sl">Левый отрезок</param>
         /// <param name="sr">Правый отрезок</param>
         /// <param name="p">Точка события</param>
-        private void FindNewEvent(Line2d? sl, Line2d? sr, Point2d p)
+        private void FindNewEvent(IEventLine? sl, IEventLine? sr, Point2d p)
         {
             if (sl == null || sr == null) return;
             var ip = sl.Intersect(sr);
@@ -66,7 +66,7 @@ namespace GeometryLib.Intersections
                 .Where(l => GetPointPosition(l, ev.Point) == PointPosition.Down)
                 .ToList();
 
-            var rList = new List<Line2d>();
+            var rList = new List<IEventLine>();
             rList.AddRange(upList);
             rList.AddRange(cList);
             rList.AddRange(downList);
@@ -90,7 +90,7 @@ namespace GeometryLib.Intersections
             }
             else
             {
-                var list1 = new List<Line2d>();
+                var list1 = new List<IEventLine>();
                 list1.AddRange(upList);
                 list1.AddRange(cList);
                 list1 = list1.OrderBy(l => l.GetPointByY(dp.Y)).ToList();
@@ -108,7 +108,7 @@ namespace GeometryLib.Intersections
         /// <summary>Поиск пересечений отрезков</summary>
         /// <param name="lines">Список отрезков</param>
         /// <returns>Список пересечений</returns>
-        public List<SweepEvent> FindIntersections(List<Line2d> lines)
+        public List<SweepEvent> FindIntersections(List<IEventLine> lines)
         {
             _eventQueue = new EventQueue();
 

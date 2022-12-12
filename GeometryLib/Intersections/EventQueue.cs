@@ -21,7 +21,7 @@ namespace GeometryLib.Intersections
         /// <summary>Добавить событие</summary>
         /// <param name="p"></param>
         /// <param name="line"></param>
-        public void AddEvent(Point2d p, Line2d line)
+        public void AddEvent(Point2d p, IEventLine line)
         {
             var even = Tree.Find(p);
             if (even == null) Tree.Add(p, new SweepEvent(p, line));
@@ -32,7 +32,7 @@ namespace GeometryLib.Intersections
         /// <param name="p"></param>
         /// <param name="line1"></param>
         /// <param name="line2"></param>
-        public void AddEvent(Point2d p, Line2d line1, Line2d line2)
+        public void AddEvent(Point2d p, IEventLine line1, IEventLine line2)
         {
             var even = Tree.Find(p);
             if (even == null)
@@ -49,7 +49,7 @@ namespace GeometryLib.Intersections
 
         /// <summary>Добавить события отрезка</summary>
         /// <param name="line"></param>
-        public void AddEvent(Line2d line)
+        public void AddEvent(IEventLine line)
         {
             AddEvent(line.First(), line);
             AddEvent(line.Last());

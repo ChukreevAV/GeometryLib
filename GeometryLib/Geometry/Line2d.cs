@@ -1,7 +1,9 @@
-﻿namespace GeometryLib.Geometry
+﻿using GeometryLib.Intersections;
+
+namespace GeometryLib.Geometry
 {
     /// <summary>Отрезок</summary>
-    public class Line2d
+    public class Line2d : IEventLine
     {
         /// <summary>Начальная точка</summary>
         public Point2d Start { get; set; }
@@ -59,10 +61,10 @@
         public double C => Start.X * End.Y - End.X * Start.Y;
 
         /// <summary>Разница X-координаты начала и конца отрезка</summary>
-        private double Dx => Start.X - End.X;
+        public double Dx => Start.X - End.X;
 
         /// <summary>Разница Y-координаты начала и конца отрезка</summary>
-        private double Dy => Start.Y - End.Y;
+        public double Dy => Start.Y - End.Y;
 
         /// <summary>Расстояние от прямой до точки</summary>
         /// <param name="p">точка до которой определяется расстояние</param>
@@ -98,7 +100,7 @@
         /// <param name="test">Отрезок</param>
         /// <param name="p">Точка</param>
         /// <returns></returns>
-        private static bool LinePointTest(Line2d test, Point2d p)
+        private static bool LinePointTest(IEventLine test, Point2d p)
         {
             if (p.Distance(test.Start) < Point2d.Epsilon) return true;
             if (p.Distance(test.End) < Point2d.Epsilon) return true;
@@ -117,7 +119,7 @@
         /// <summary>Поиск точки пересечения</summary>
         /// <param name="test">Отрезок ля проверки</param>
         /// <returns>Точка пересечения</returns>
-        public Point2d? Intersect(Line2d test)
+        public Point2d? Intersect(IEventLine test)
         {
             var desc = Dx * test.Dy - Dy * test.Dx;
             var x = (C * test.Dx - Dx * test.C) / desc;

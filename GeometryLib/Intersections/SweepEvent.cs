@@ -9,7 +9,7 @@ namespace GeometryLib.Intersections
         public Point2d Point { get; set; }
 
         /// <summary>Список отрезков совпадающих в точке</summary>
-        public List<Line2d> Lines { get; } = new();
+        public List<IEventLine> Lines { get; } = new();
 
         /// <summary>Конструктор</summary>
         /// <param name="p">Точка события</param>
@@ -21,7 +21,7 @@ namespace GeometryLib.Intersections
         /// <summary>Конструктор</summary>
         /// <param name="p">Точка события</param>
         /// <param name="line">Отрезок попадающий в точку события</param>
-        public SweepEvent(Point2d p, Line2d line)
+        public SweepEvent(Point2d p, IEventLine line)
         {
             Point = p;
             Lines.Add(line);
@@ -31,7 +31,7 @@ namespace GeometryLib.Intersections
         /// <param name="p">Точка события</param>
         /// <param name="line1"></param>
         /// <param name="line2"></param>
-        public SweepEvent(Point2d p, Line2d line1, Line2d line2)
+        public SweepEvent(Point2d p, IEventLine line1, IEventLine line2)
         {
             Point = p;
             Lines.Add(line1);
@@ -41,7 +41,7 @@ namespace GeometryLib.Intersections
         /// <summary>Конструктор</summary>
         /// <param name="p">Точка события</param>
         /// <param name="lines">Список отрезков в точке события</param>
-        public SweepEvent(Point2d p, IEnumerable<Line2d> lines)
+        public SweepEvent(Point2d p, IEnumerable<IEventLine> lines)
         {
             Point = p;
             Lines.AddRange(lines);
@@ -49,7 +49,7 @@ namespace GeometryLib.Intersections
 
         /// <summary>Добавить отрезок</summary>
         /// <param name="line"></param>
-        public void Add(Line2d line)
+        public void Add(IEventLine line)
         {
             if (!Lines.Contains(line)) Lines.Add(line);
         }
