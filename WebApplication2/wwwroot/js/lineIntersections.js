@@ -17,6 +17,32 @@ function _displayItems(data) {
     clear(canvas1);
 
     if (data.lines != null) data.lines.forEach(l => drawLine(l.id, l, "green", canvas1));
+    if (data.result != null) data.result.forEach(r => drawPoint(r.point, "blue", canvas1));
+    if (_data.sweepEvents != null) {
+        var firstEvent = _data.sweepEvents[0];
+        drawPoint(firstEvent.point, "red", canvas1);
+    }
+}
+
+async function addItem() {
+
+    const response1 = await window.fetch(uri,
+        {
+            method: "POST",
+            headers: {
+                'Accept': "application/json",
+                'Content-Type': "application/json"
+            },
+            body: JSON.stringify(_data)
+        });
+
+    if (response1.ok) { // если HTTP-статус в диапазоне 200-299
+        // получаем тело ответа (см. про этот метод ниже)
+        const json = await response1.json();
+        _displayItems(json);
+    } else {
+        alert(`Ошибка HTTP: ${response1.status}`);
+    }
 }
 
 function pointToStr(p) {
@@ -51,7 +77,6 @@ function selectPoint1(pid) {
             div1.setAttribute("class", `div-2`);
         }
     }
-
 }
 
 function createDetails(ev) {
@@ -68,6 +93,7 @@ function createDetails(ev) {
 
 function write1() {
     const canvas1 = document.getElementById("column1");
+    clear(canvas1);
     //var test1 = "";
     //if (_data.sweepEvents != null) _data.sweepEvents.forEach(ev => test1 += `${pointToStr(ev.point)}\n`);
     //canvas1.innerText = test1;

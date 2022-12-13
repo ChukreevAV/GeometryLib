@@ -18,6 +18,14 @@ namespace GeometryLib.Intersections
             Tree.Add(p, even);
         }
 
+        public void AddEvent(Point2d p, List<IEventLine> lines)
+        {
+            var even = Tree.Find(p);
+            if (even != null) return;
+            even = new SweepEvent(p, lines);
+            Tree.Add(p, even);
+        }
+
         /// <summary>Добавить событие</summary>
         /// <param name="p"></param>
         /// <param name="line"></param>

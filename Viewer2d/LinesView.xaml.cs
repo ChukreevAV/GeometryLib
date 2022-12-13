@@ -1,17 +1,14 @@
-﻿using GeometryLib.Geometry;
+﻿using GeometryLib;
+using GeometryLib.Geometry;
 using GeometryLib.Intersections;
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
-using GeometryLib;
 
 namespace Viewer2d
 {
@@ -55,7 +52,8 @@ namespace Viewer2d
 
         private int _position = 0;
 
-        private List<Line2d> _lines = LoadData.ReadLines(@"F:\work\lines2.txt");
+        //private List<Line2d> _lines = LoadData.ReadLines(@"F:\work\lines2.txt");
+        private List<Line2d> _lines = GetSampleData.GetRandomLine2ds(20);
         private StateNode _tree;
 
         private void OnTimedEvent(object? sender, EventArgs e)
@@ -88,7 +86,7 @@ namespace Viewer2d
             }
 
             var i = new IntersectionsMethods();
-            var r = i.FindIntersections(_lines);
+            var r = i.FindIntersections(_lines.Cast<IEventLine>().ToList());
 
             foreach (var ev in r)
             {
