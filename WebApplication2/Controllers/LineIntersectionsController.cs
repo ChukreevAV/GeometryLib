@@ -17,7 +17,7 @@ namespace WebApplication2.Controllers
         [HttpGet]
         public async Task<ActionResult<LineIntersectionsState>> GetLineIntersections()
         {
-            var convexHull = new LineIntersectionsState(GetSampleData.GetRandomLine2ds(7));
+            var convexHull = new LineIntersectionsState(GetSampleData.GetRandomLine2ds(12));
             return await new ValueTask<ActionResult<LineIntersectionsState>>(convexHull);
         }
 
@@ -136,7 +136,7 @@ namespace WebApplication2.Controllers
         public async Task<ActionResult<LineIntersectionsState>> Next(LineIntersectionsState state)
         {
             _eventQueue = GetEventQueue(state);
-            _statusTree = StateNodeDto.Load(state.Tree) ?? new StateNode();
+            _statusTree = StateNodeDto.Load(null, state.Tree) ?? new StateNode();
             _result = GetEventList(state.Result);
 
             HandleEventPoint(_eventQueue.GetNextEvent());

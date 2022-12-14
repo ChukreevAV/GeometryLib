@@ -53,6 +53,11 @@ namespace GeometryLib.Intersections
         /// <summary>Конструктор</summary>
         public StateNode() {}
 
+        public StateNode(StateNode? parent)
+        {
+            _parent = parent;
+        }
+
         /// <summary>Конструктор</summary>
         /// <param name="parent">Родитель</param>
         /// <param name="p">Точка на линии заметания</param>

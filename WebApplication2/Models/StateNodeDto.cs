@@ -33,18 +33,21 @@ namespace WebApplication2.Models
             };
         }
 
-        public static StateNode? Load(StateNodeDto? node)
+        public static StateNode? Load(StateNode? parent, StateNodeDto? node)
         {
             if (node == null) return null;
 
-            return new StateNode
+            var newNode = new StateNode(parent)
             {
                 Line = node.Line,
                 LeftLine = node.LeftLine,
-                RightLine = node.RightLine,
-                LeftNode = Load(node.LeftNode),
-                RightNode = Load(node.RightNode)
+                RightLine = node.RightLine
             };
+
+            newNode.LeftNode = Load(newNode, node.LeftNode);
+            newNode.RightNode = Load(newNode, node.RightNode);
+
+            return newNode;
         }
     }
 }
