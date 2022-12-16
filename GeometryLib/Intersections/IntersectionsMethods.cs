@@ -72,7 +72,7 @@ namespace GeometryLib.Intersections
             rList.AddRange(downList);
             rList = rList.Distinct().ToList();
 
-            if ( rList.Count > 1) _result.Add(new SweepEvent(ev.Point, rList));
+            if (rList.Count > 1) _result.Add(new SweepEvent(ev.Point, rList));
 
             _statusTree.Remove(downList);
             _statusTree.Remove(cList);

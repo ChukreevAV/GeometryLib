@@ -1,4 +1,6 @@
-﻿namespace GeometryLib.Geometry
+﻿using GeometryLib.Intersections;
+
+namespace GeometryLib.Geometry
 {
     public class Subdivision
     {
@@ -29,14 +31,14 @@
                 return oEdge;
             }
 
-            var sEdge = new HalfEdge(sv, face);
-            var eEdge = new HalfEdge(ev, face);
+            var sEdge = new HalfEdge(sv, ev, face);
+            //var eEdge = new HalfEdge(ev, face);
 
-            sEdge.Twin = eEdge;
-            eEdge.Twin = sEdge;
+            //sEdge.Twin = eEdge;
+            //eEdge.Twin = sEdge;
 
             Edges.Add(sEdge);
-            Edges.Add(eEdge);
+            //Edges.Add(eEdge);
 
             return sEdge;
         }
@@ -122,7 +124,7 @@
                 var nEdge = sb.Copy(nextEdge, nFace);
 
                 wEdge.AddNext(nEdge);
-
+                wEdge = nEdge;
                 workEdge = nextEdge;
             }
 
@@ -159,6 +161,11 @@
             {
                 Copy(face, this);
             }
+        }
+
+        public List<IEventLine> GetLines()
+        {
+            return Edges.Select(e => new EdgeLine(e)).ToList<IEventLine>();
         }
     }
 }

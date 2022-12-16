@@ -22,6 +22,7 @@ function _displayItems(data) {
     if (_data.sweepEvents != null) {
         var firstEvent = _data.sweepEvents[0];
         drawPoint(firstEvent.point, "red", canvas1);
+        drawLineY(firstEvent.point.y, "grey", canvas1);
     }
 
     const canvas2 = document.getElementById("lines");

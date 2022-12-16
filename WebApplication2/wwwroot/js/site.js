@@ -21,7 +21,7 @@ function createLine(x1, y1, x2, y2, style) {
     return line;
 }
 
-function createLine(id, x1, y1, x2, y2, style) {
+function createLineId(id, x1, y1, x2, y2, style) {
     const line = document.createElementNS(svgNameSpace, "line");
     line.setAttributeNS(null, "id", `line${id}`);
     line.setAttributeNS(null, "x1", x1);
@@ -59,13 +59,17 @@ function drawPoint(p, color, canvas) {
     canvas.appendChild(createCircle(p.x, p.y, color));
 }
 
+function drawLineY(y, color, canvas) {
+    canvas.appendChild(createLine(0.0, y, 1.0, y, `stroke:${color};stroke-width:0.001`));
+};
+
 //Рисуем отрезок
 function drawLine(l, color, canvas) {
     canvas.appendChild(createLine(l.start.x, l.start.y, l.end.x, l.end.y, createStyle(color)));
 }
 
 function drawLine(id, l, color, canvas) {
-    canvas.appendChild(createLine(id, l.start.x, l.start.y, l.end.x, l.end.y, createStyle(color)));
+    canvas.appendChild(createLineId(id, l.start.x, l.start.y, l.end.x, l.end.y, createStyle(color)));
 }
 
 //Очищаем рисунок

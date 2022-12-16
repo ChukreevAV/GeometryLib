@@ -5,10 +5,10 @@ namespace GeometryLib.Intersections
     public interface IEventLine
     {
         /// <summary>Начальная точка</summary>
-        Point2d Start { get; set; }
+        Point2d Start { get; }
 
         /// <summary>Конечная точка</summary>
-        Point2d End { get; set; }
+        Point2d End { get; }
 
         /// <summary>"Первая" точка</summary>
         /// <returns></returns>

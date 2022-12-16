@@ -56,6 +56,11 @@ namespace GeometryLib.Geometry
         public double Distance(Point2d p)
             => Math.Sqrt(Math.Pow(X - p.X, 2) + Math.Pow(Y - p.Y, 2));
 
+        /// <summary>Counterclockwise > 0</summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <param name="c"></param>
+        /// <returns></returns>
         public static double Counterclockwise(Point2d a, Point2d b, Point2d c) 
             => (b.X - a.X) * (c.Y - a.Y) - (c.X - a.X) * (b.Y - a.Y);
 

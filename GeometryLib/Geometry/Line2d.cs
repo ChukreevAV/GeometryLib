@@ -49,7 +49,8 @@ namespace GeometryLib.Geometry
 
         public double GetX(double y) => (-B * y - C) / A;
 
-        public Point2d GetPointByY(double y) => new (GetX(y), y);
+        public Point2d GetPointByY(double y) 
+            => new (A == 0 ? Math.Min(Start.X, End.X) : GetX(y), y);
 
         /// <summary>Параметр A в уравнении Ax+By+C=0</summary>
         public double A => Start.Y - End.Y;

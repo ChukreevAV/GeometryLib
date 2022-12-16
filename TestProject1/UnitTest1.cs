@@ -309,13 +309,38 @@ namespace TestProject1
             var f2 = sub2.AddFace(list2);
 
             sub1.Add(sub2);
+            var ed1 = sub1.Edges[0];
+            var ed2 = sub1.Edges[4];
+
+            var ed3 = sub1.Edges[3];
+            var ed4 = sub1.Edges[7];
+
+            var v1 = new Vertex(new Point2d(1.5, 1));
+            ed1.Divide(ed2, v1);
+            //ed3.Divide(ed4, new Point2d(2, 1.5));
+
+            var list3 = sub1.GetLines();
+            var i = new IntersectionsMethods();
+            var r = i.FindIntersections(list3);
         }
 
 
         [TestMethod] public void TestMethod6()
         {
-            var lines = GetSampleData.GetRandomLine2ds(10);
-            Assert.IsTrue(lines.Count == 10);
+            var list1 = new List<Point2d>
+            {
+                new(0, 0),
+                new(1, 0),
+                new(1, 1)
+            };
+
+            var sub1 = new Subdivision();
+            var f1 = sub1.AddFace(list1);
+            var edge1 = f1.Outher;
+
+            var p1 = new Point2d(0.5, 0.5);
+            var v1 = new Vertex(p1);
+            edge1.Divide(v1);
         }
     }
 }

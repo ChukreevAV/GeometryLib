@@ -1,6 +1,4 @@
-﻿using static System.Net.Mime.MediaTypeNames;
-
-namespace GeometryLib.Geometry
+﻿namespace GeometryLib.Geometry
 {
     public class Face
     {
