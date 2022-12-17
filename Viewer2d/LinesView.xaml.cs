@@ -35,10 +35,13 @@ namespace Viewer2d
         {
             var ellipse = new Ellipse();
             ellipse.Fill = brush;
-            var size = 12;
+            var size = 6;
             ellipse.Height = size;
             ellipse.Width = size;
-            ellipse.Margin = new Thickness(center.X * _scale1 - size / 2, center.Y * _scale1 - size / 2, 0, 0);
+            ellipse.Margin = new Thickness(
+                center.X * _scale1 - size / 2, 
+                center.Y * _scale1 - size / 2, 
+                0, 0);
             WorkCanvas.Children.Add(ellipse);
         }
 

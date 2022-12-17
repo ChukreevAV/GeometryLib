@@ -124,10 +124,11 @@ namespace GeometryLib.Geometry
                 var nEdge = sb.Copy(nextEdge, nFace);
 
                 wEdge.AddNext(nEdge);
+             
+                if (nextEdge == fistEdge) break;
                 wEdge = nEdge;
                 workEdge = nextEdge;
             }
-
             wEdge.AddNext(fEdge);
 
             //return nFace;
