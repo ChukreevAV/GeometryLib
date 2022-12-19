@@ -43,7 +43,15 @@ namespace GeometryLib.Geometry
             return sEdge;
         }
 
-        public Face AddFace(List<Point2d> points)
+        public bool IsCounterclockwise(List<Point2d> points)
+        {
+            if (points.Count < 3) 
+                throw new ArgumentException("Точек < 3");
+
+            return Point2d.Counterclockwise(points[0], points[1], points[2]) > 0;
+        }
+
+      public Face AddFace(List<Point2d> points)
         {
             var face = new Face();
             Faces.Add(face);
@@ -53,6 +61,8 @@ namespace GeometryLib.Geometry
             HalfEdge? startHalfEdge = null;
             HalfEdge? prevHalfEdge = null;
             HalfEdge newHalfEdge;
+                
+            if (IsCounterclockwise(points)) points.Reverse();
 
             foreach (var v in points.Select(AddVertex))
             {

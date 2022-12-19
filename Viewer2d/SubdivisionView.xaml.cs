@@ -2,11 +2,10 @@
 using GeometryLib.Intersections;
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
-
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Viewer2d
 {
@@ -18,15 +17,16 @@ namespace Viewer2d
         private double _scale1 = 100;
 
         private Dictionary<HalfEdge, Line> Lines = new();
+        //private Dictionary<HalfEdge, Line> TwinLines = new();
 
         public Line DrawLine(IEventLine line2d, Brush brush)
         {
             var line1 = new Line
             {
                 X1 = line2d.Start.X * _scale1,
-                Y1 = line2d.Start.Y * _scale1,
+                Y1 = _scale1 - line2d.Start.Y * _scale1 * -1,
                 X2 = line2d.End.X * _scale1,
-                Y2 = line2d.End.Y * _scale1,
+                Y2 = _scale1 - line2d.End.Y * _scale1 * -1,
                 Stroke = brush,
                 StrokeThickness = 1
             };
@@ -58,6 +58,20 @@ namespace Viewer2d
             sub2.AddFace(list2);
 
             sub1.Add(sub2);
+            var ed1 = sub1.Edges[2];
+            var ed2 = sub1.Edges[5];
+
+            var ed3 = sub1.Edges[3];
+            var ed4 = sub1.Edges[4];
+
+            var v2 = new Vertex(new Point2d(1.5, 1));
+            var v1 = new Vertex(new Point2d(2, 1.5));
+            sub1.Vertices.Add(v1);
+            sub1.Vertices.Add(v2);
+            var eList = ed1.Divide(ed2, v1);
+            sub1.Edges.AddRange(eList);
+            eList = ed3.Divide(ed4, v2);
+            sub1.Edges.AddRange(eList);
             return sub1;
         }
 
@@ -67,6 +81,7 @@ namespace Viewer2d
             {
                 var line = DrawLine(new EdgeLine(edge), Brushes.Green);
                 Lines.Add(edge, line);
+                Lines.Add(edge.Twin, line);
             }
         }
 
@@ -74,8 +89,29 @@ namespace Viewer2d
         {
             InitializeComponent();
             var sub1 = GetData();
+
             EdgesList.ItemsSource = sub1.Edges;
+            var tList = sub1.Edges.Select(e => e.Twin);
+            TwinsList.ItemsSource = tList;
+
+            var eList = sub1.Faces.SelectMany(f => f.GetEdges());
+            Edges1List.ItemsSource = eList;
+
             DrawSub(sub1);
+        }
+
+        private void SetColor(HalfEdge? edge, Brush brush)
+        {
+            if (edge == null || !Lines.ContainsKey(edge)) return;
+            var line = Lines[edge];
+            line.Stroke = brush;
+        }
+
+        private void SetTwinColor(HalfEdge? edge, Brush brush)
+        {
+            if (edge == null || !Lines.ContainsKey(edge)) return;
+            var line = Lines[edge];
+            line.Stroke = brush;
         }
 
         private void EdgesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -83,30 +119,54 @@ namespace Viewer2d
             foreach (var obj in e.RemovedItems)
             {
                 if (obj is not HalfEdge edge1) continue;
-                var line1 = Lines[edge1];
-                line1.Stroke = Brushes.Green;
-                //TwinStackPanel.DataContext = null;
-                var linePrev1 = Lines[edge1.Prev];
-                linePrev1.Stroke = Brushes.Green;
-
-                var lineNext1 = Lines[edge1.Next];
-                lineNext1.Stroke = Brushes.Green;
+                SetColor(edge1, Brushes.Green);
+                SetColor(edge1.Prev, Brushes.Green);
+                SetColor(edge1.Next, Brushes.Green);
             }
 
             foreach (var obj in e.AddedItems)
             {
                 if (obj is not HalfEdge edge) continue;
-                var line = Lines[edge];
-                line.Stroke = Brushes.Red;
+
                 TwinStackPanel.DataContext = edge.Twin;
                 NextStackPanel.DataContext = edge.Next;
                 PrevStackPanel.DataContext = edge.Prev;
 
-                var linePrev = Lines[edge.Prev];
-                linePrev.Stroke = Brushes.DarkBlue;
+                SetColor(edge, Brushes.Red);
+                SetColor(edge.Prev, Brushes.DarkBlue);
+                SetColor(edge.Next, Brushes.Aqua);
+            }
+        }
 
-                var lineNext = Lines[edge.Next];
-                lineNext.Stroke = Brushes.Aqua;
+        private void TwinsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            foreach (var obj in e.RemovedItems)
+            {
+                if (obj is not HalfEdge edge1) continue;
+                SetTwinColor(edge1, Brushes.Green);
+                SetTwinColor(edge1.Prev, Brushes.Green);
+                SetTwinColor(edge1.Next, Brushes.Green);
+            }
+
+            foreach (var obj in e.AddedItems)
+            {
+                if (obj is not HalfEdge edge) continue;
+
+                TwinStackPanel.DataContext = edge.Twin;
+                NextStackPanel.DataContext = edge.Next;
+                PrevStackPanel.DataContext = edge.Prev;
+
+                SetTwinColor(edge, Brushes.Red);
+                SetTwinColor(edge.Prev, Brushes.DarkBlue);
+                SetTwinColor(edge.Next, Brushes.Aqua);
+            }
+        }
+
+        private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            foreach (var line in Lines.Values)
+            {
+                line.Stroke = Brushes.Green;
             }
         }
     }

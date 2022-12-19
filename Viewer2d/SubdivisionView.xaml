@@ -45,8 +45,26 @@
                 <TextBlock Text=" End : " />
                 <TextBlock Text="{Binding Path=End.Point}" />
             </StackPanel>
+            <Button Width="80" Height="24" HorizontalAlignment="Left" Content="Clear" Click="Button_Click"/>
         </StackPanel>
-        <ListBox x:Name="EdgesList" Grid.Column="1" ItemTemplate="{StaticResource EdgeTemplate}" 
-                 SelectionChanged="EdgesList_SelectionChanged" />
+        <TabControl  Grid.Column="1">
+            <TabItem Header="TabItem">
+                <Grid>
+                    <ListBox x:Name="EdgesList" ItemTemplate="{StaticResource EdgeTemplate}" 
+                             SelectionChanged="EdgesList_SelectionChanged" />
+                </Grid>
+            </TabItem>
+            <TabItem Header="TabItem">
+                <Grid>
+                    <ListBox x:Name="TwinsList" ItemTemplate="{StaticResource EdgeTemplate}" SelectionChanged="TwinsList_SelectionChanged"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="TabItem">
+                <Grid>
+                    <ListBox x:Name="Edges1List" ItemTemplate="{StaticResource EdgeTemplate}" 
+                             SelectionChanged="EdgesList_SelectionChanged" />
+                </Grid>
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>
