@@ -1,4 +1,5 @@
-﻿using GeometryLib.Geometry;
+﻿using GeometryLib.ConvexHull;
+using GeometryLib.Geometry;
 
 namespace GeometryLib
 {
@@ -17,6 +18,13 @@ namespace GeometryLib
             }
 
             return list1;
+        }
+
+        public static List<Point2d> GetRandomConvexHull(int count)
+        {
+            var list1 = GetRandomPoint2ds(count);
+            list1.Sort();
+            return ConvexHullMethods.ConvexHull(list1);
         }
 
         public static List<Line2d> GetRandomLine2ds(int count)

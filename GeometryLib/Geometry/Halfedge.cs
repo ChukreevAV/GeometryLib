@@ -1,6 +1,4 @@
-﻿using static System.Net.Mime.MediaTypeNames;
-
-namespace GeometryLib.Geometry
+﻿namespace GeometryLib.Geometry
 {
     public class HalfEdge
     {
@@ -76,6 +74,7 @@ namespace GeometryLib.Geometry
             Next.Prev = newHalfEdge;
             Next = newHalfEdge;
             newHalfEdge.Twin = Twin;
+            Twin.Twin = newHalfEdge;
             newHalfEdge.Prev = this;
 
             var newTwinHalfEdge = new HalfEdge(v, Twin.Face);
@@ -84,6 +83,7 @@ namespace GeometryLib.Geometry
             Twin.Next.Prev = newTwinHalfEdge;
             Twin.Next = newTwinHalfEdge;
 
+            newTwinHalfEdge.Twin = this;
             Twin = newTwinHalfEdge;
         }
 
@@ -98,7 +98,7 @@ namespace GeometryLib.Geometry
             edge.Divide(v);
             rList.Add(edge.Next);
 
-            if (ccw < 0)
+            if (ccw > 0)
             {
                 var rightEdge = edge.Next;
 
@@ -134,56 +134,6 @@ namespace GeometryLib.Geometry
             return rList;
         }
 
-        /// <summary>
-        /// Counterclockwise > 0
-        /// </summary>
-        /// <param name="edge"></param>
-        /// <param name="v"></param>
-        public List<HalfEdge> OldDivide(HalfEdge edge, Vertex v)
-        {
-            var rList = new List<HalfEdge>();
-            var ccw = Point2d.Counterclockwise(Origin.Point, v.Point, edge.End.Point);
-
-            var nextEdge = new HalfEdge(v, Face);
-            var nextTwinEdge = new HalfEdge(v, Twin.Face);
-            rList.Add(nextEdge);
-            //rList.Add(nextTwinEdge);
-            nextEdge.SetTwin(Twin);
-            nextEdge.AddNext(Next);
-            SetTwin(nextTwinEdge);
-            AddPrev(Prev);
-
-            if (ccw < 0)
-            {
-                var rightEdge = new HalfEdge(v, edge.Face);
-                var rightTwinEdge = new HalfEdge(v, edge.Twin.Face);
-                rList.Add(rightEdge);
-                //rList.Add(rightTwinEdge);
-                rightEdge.SetTwin(edge.Twin);
-                edge.SetTwin(rightTwinEdge);
-                edge.AddPrev(edge.Prev);
-                rightEdge.AddNext(edge.Next);
-                nextEdge.AddPrev(edge);
-                rightEdge.AddPrev(this);
-            }
-            else
-            {
-                var leftEdge = new HalfEdge(v, edge.Face);
-                var leftTwinEdge = new HalfEdge(v, edge.Twin.Face);
-                rList.Add(leftEdge);
-
-                //rList.Add(leftTwinEdge);
-                leftEdge.SetTwin(edge.Twin);
-                edge.SetTwin(leftTwinEdge);
-                edge.AddPrev(edge.Prev);
-                leftEdge.AddNext(edge.Next);
-                nextEdge.AddPrev(edge);
-                leftEdge.AddPrev(this);
-            }
-
-            return rList;
-        }
-
         private void SelfReverse()
         {
             if (Prev == null || Next == null || Twin == null) return;
@@ -199,6 +149,44 @@ namespace GeometryLib.Geometry
             next.SelfReverse();
             Next = next;
         }
+
+        public List<HalfEdge> GetLoop()
+        {
+            var loopList = new List<HalfEdge> { this };
+            var nextEdge = Next;
+            while (nextEdge != this)
+            {
+                if (nextEdge == null) return loopList;
+                loopList.Add(nextEdge);
+                nextEdge = nextEdge.Next;
+            }
+
+            return loopList;
+        }
+
+        public HalfEdge GetLeftEdge()
+        {
+            var minEdge = this;
+            var nextEdge = Next;
+            while (nextEdge != this)
+            {
+                if (nextEdge == null) return minEdge;
+                if (nextEdge.Origin.Point > minEdge.Origin.Point) 
+                    minEdge = nextEdge;
+
+                nextEdge = nextEdge.Next;
+            }
+
+            return minEdge;
+        }
+
+        public bool IsCounterclockwise
+             => Point2d.Counterclockwise(Origin.Point, End.Point, Next.End.Point) > 0;
+
+        public double GetAngle() 
+            => Point2d.GetAngle(Origin.Point, End.Point, Next.End.Point);
+
+        public bool IsOuther() => Math.Abs(GetLeftEdge().GetAngle()) < Math.PI;
 
         public Vertex End => Twin.Origin;
 

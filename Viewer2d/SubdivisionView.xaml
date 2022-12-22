@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Viewer2d"
         mc:Ignorable="d"
-        Title="SubdivisionView" Height="450" Width="800">
+        Title="SubdivisionView" Height="450" Width="800" MouseMove="Window_MouseMove">
     <Window.Resources>
         <DataTemplate x:Key="EdgeTemplate">
             <StackPanel Orientation="Horizontal">
@@ -13,6 +13,10 @@
                 <TextBlock Text="{Binding Path=Origin.Point}" />
                 <TextBlock Text=" End : " />
                 <TextBlock Text="{Binding Path=End.Point}" />
+                <TextBlock Text=" Face : " />
+                <TextBlock Text="{Binding Path=Face.FullName}" />
+                <TextBlock Text=" CCV : " />
+                <TextBlock Text="{Binding Path=IsCounterclockwise}" />
             </StackPanel>
         </DataTemplate>
     </Window.Resources>
@@ -22,7 +26,18 @@
             <ColumnDefinition/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <Canvas Grid.Column="0" Grid.Row="0" x:Name="WorkCanvas" />
+        <TabControl  Grid.Column="0">
+            <TabItem Header="TabItem">
+                <Grid>
+                    <Canvas Grid.Column="0" Grid.Row="0" x:Name="WorkCanvas" MouseMove="WorkCanvas_MouseMove" />
+                </Grid>
+            </TabItem>
+            <TabItem Header="TabItem">
+                <Grid>
+                    <Canvas Grid.Column="0" Grid.Row="0" x:Name="WorkCanvas2" />
+                </Grid>
+            </TabItem>
+        </TabControl>
         <StackPanel  Grid.Column="2">
             <StackPanel x:Name="TwinStackPanel" Orientation="Horizontal">
                 <TextBlock Text="Twin : " />
@@ -46,6 +61,7 @@
                 <TextBlock Text="{Binding Path=End.Point}" />
             </StackPanel>
             <Button Width="80" Height="24" HorizontalAlignment="Left" Content="Clear" Click="Button_Click"/>
+            <TextBlock x:Name="Coords" Text="???" />
         </StackPanel>
         <TabControl  Grid.Column="1">
             <TabItem Header="TabItem">
@@ -63,6 +79,11 @@
                 <Grid>
                     <ListBox x:Name="Edges1List" ItemTemplate="{StaticResource EdgeTemplate}" 
                              SelectionChanged="EdgesList_SelectionChanged" />
+                </Grid>
+            </TabItem>
+            <TabItem Header="Faces">
+                <Grid>
+                    <ListBox x:Name="Faces1List" ItemTemplate="{StaticResource EdgeTemplate}" SelectionChanged="Faces1List_SelectionChanged" />
                 </Grid>
             </TabItem>
         </TabControl>

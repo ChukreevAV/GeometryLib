@@ -1,7 +1,13 @@
-﻿namespace GeometryLib.Geometry
+﻿using System.Linq;
+
+namespace GeometryLib.Geometry
 {
     public class Face
     {
+        public List<string> Names { get; } = new();
+
+        public string FullName => string.Join(" ", Names);
+
         public HalfEdge? Outher { get; set; }
 
         public List<HalfEdge> Inner { get; set; } = new();
@@ -11,7 +17,7 @@
             var fistEdge = Outher;
             var workEdge = Outher.Next;
 
-            var edges = new List<HalfEdge> { fistEdge , workEdge };
+            var edges = new List<HalfEdge> { fistEdge, workEdge };
 
             while (workEdge != fistEdge)
             {
@@ -19,6 +25,18 @@
                 edges.Add(workEdge);
             }
             return edges;
+        }
+
+        public Face() { }
+
+        public Face(string name)
+        {
+            Names.Add(name);
+        }
+
+        public Face(IEnumerable<string> names)
+        {
+            Names.AddRange(names);
         }
 
         public void Reverse()

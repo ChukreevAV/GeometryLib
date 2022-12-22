@@ -45,19 +45,7 @@ namespace GeometryLib.ConvexHull
             return hull;
         }
 
-        /// <summary>Получить угол между тремя точками</summary>
-        /// <param name="p1"></param>
-        /// <param name="p2"></param>
-        /// <param name="p3"></param>
-        /// <returns></returns>
-        public static double GetAngle(Point2d p1, Point2d p2, Point2d p3)
-        {
-            var v1 = p1 - p2;
-            var v2 = p3 - p2;
-            var a1 = Math.Atan2(v1.X, v1.Y);
-            var a2 = Math.Atan2(v2.X, v2.Y);
-            return a2 - a1;
-        }
+
 
         private static void MakeHalfHull(IList<Point2d> list, Func<double, bool> func)
         {
@@ -65,7 +53,7 @@ namespace GeometryLib.ConvexHull
             do
             {
                 var c2 = list.Count;
-                var ang = GetAngle(list[c2 - 3], list[c2 - 2], list[c2 - 1]);
+                var ang = Point2d.GetAngle(list[c2 - 3], list[c2 - 2], list[c2 - 1]);
                 if (func(ang))
                 {
                     list.Remove(list[c2 - 2]);

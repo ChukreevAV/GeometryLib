@@ -342,5 +342,18 @@ namespace TestProject1
             var v1 = new Vertex(p1);
             edge1.Divide(v1);
         }
+
+        [TestMethod]
+        public void TestMethod7()
+        {
+            var p1 = new Point2d(1.5, 0.5);
+            var p2 = new Point2d(1.5, 1);
+            var p3 = new Point2d(1, 1);
+            var p4 = new Point2d(2, 1);
+            var a1 = Point2d.Counterclockwise(p1, p2, p3);
+            var a2 = Point2d.Counterclockwise(p1, p2, p4);
+            Assert.IsTrue(a1 > 0, "good");
+            Assert.IsTrue(a2 < 0, "good");
+        }
     }
 }

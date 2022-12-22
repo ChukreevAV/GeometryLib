@@ -4,7 +4,7 @@ namespace GeometryLib.Geometry
 {
     public class Subdivision
     {
-        public List<Face> Faces { get; } = new ();
+        public List<Face> Faces { get; } = new();
 
         public List<HalfEdge> Edges { get; } = new();
 
@@ -45,31 +45,28 @@ namespace GeometryLib.Geometry
 
         public bool IsCounterclockwise(List<Point2d> points)
         {
-            if (points.Count < 3) 
+            if (points.Count < 3)
                 throw new ArgumentException("Точек < 3");
 
             return Point2d.Counterclockwise(points[0], points[1], points[2]) > 0;
         }
 
-      public Face AddFace(List<Point2d> points)
+        private void _addFace(Face face, List<Point2d> points)
         {
-            var face = new Face();
-            Faces.Add(face);
-
             Vertex? sv = null;
             Vertex? prevVertex = null;
             HalfEdge? startHalfEdge = null;
             HalfEdge? prevHalfEdge = null;
             HalfEdge newHalfEdge;
-                
-            if (IsCounterclockwise(points)) points.Reverse();
+
+            if (!IsCounterclockwise(points)) points.Reverse();
 
             foreach (var v in points.Select(AddVertex))
             {
                 if (sv == null) sv = v;
                 else
                 {
-                    if (prevVertex == null) 
+                    if (prevVertex == null)
                         throw new NullReferenceException("prevVertex == null");
 
                     newHalfEdge = AddEdge(prevVertex, v, face);
@@ -89,6 +86,24 @@ namespace GeometryLib.Geometry
             newHalfEdge.AddNext(startHalfEdge);
 
             face.Outher = newHalfEdge;
+        }
+
+        public Face AddFace(List<Point2d> points)
+        {
+            var face = new Face();
+            Faces.Add(face);
+
+            _addFace(face, points);
+
+            return face;
+        }
+
+        public Face AddFace(string name, List<Point2d> points)
+        {
+            var face = new Face(name);
+            Faces.Add(face);
+
+            _addFace(face, points);
 
             return face;
         }
@@ -102,7 +117,7 @@ namespace GeometryLib.Geometry
 
             var end = Vertices.Find(v => v.IsEquals(old.End.Point));
 
-            if (origin == null || end == null) 
+            if (origin == null || end == null)
                 throw new Exception("origin == null || end == null");
 
             return AddEdge(origin, end, newFace);
@@ -110,7 +125,7 @@ namespace GeometryLib.Geometry
 
         private void Copy(Face oldFace, Subdivision sb)
         {
-            var nFace = new Face();
+            var nFace = new Face(oldFace.Names);
             sb.Faces.Add(nFace);
 
             var fistEdge = oldFace.Outher; //TODO Add Inner
@@ -128,13 +143,13 @@ namespace GeometryLib.Geometry
             {
                 var nextEdge = workEdge.Next;
 
-                if (nextEdge == null) 
+                if (nextEdge == null)
                     throw new Exception("nextEdge == null");
 
                 var nEdge = sb.Copy(nextEdge, nFace);
 
                 wEdge.AddNext(nEdge);
-             
+
                 if (nextEdge == fistEdge) break;
                 wEdge = nEdge;
                 workEdge = nextEdge;
@@ -172,6 +187,35 @@ namespace GeometryLib.Geometry
             {
                 Copy(face, this);
             }
+        }
+
+        public List<HalfEdge> GetEdges(Point2d p)
+        {
+            var v = Vertices.First(v => v.Point.Equals(p));
+            return Edges.Where(e => e.Origin == v || e.End == v).ToList();
+        }
+
+        public List<HalfEdge> GetAllEdges()
+        {
+            var edges = Edges.Select(e => e.Twin).ToList();
+            edges.AddRange(Edges);
+            return edges;
+        }
+
+        public List<HalfEdge> GetLoops()
+        {
+            var loops = new List<HalfEdge>();
+            var edges = GetAllEdges();
+
+            while (edges.Any())
+            {
+                var edge = edges.First();
+                loops.Add(edge);
+                var loop = edge.GetLoop();
+                edges.RemoveAll(e => loop.Contains(e));
+            }
+
+            return loops;
         }
 
         public List<IEventLine> GetLines()

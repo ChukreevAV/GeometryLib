@@ -56,7 +56,7 @@ namespace GeometryLib.Geometry
         public double Distance(Point2d p)
             => Math.Sqrt(Math.Pow(X - p.X, 2) + Math.Pow(Y - p.Y, 2));
 
-        /// <summary>Counterclockwise > 0</summary>
+        /// <summary>Counterclockwise меньше 0</summary>
         /// <param name="a"></param>
         /// <param name="b"></param>
         /// <param name="c"></param>
@@ -84,6 +84,20 @@ namespace GeometryLib.Geometry
             }
 
             return tp.X > X ? -1 : 1;
+        }
+
+        /// <summary>Получить угол между тремя точками</summary>
+        /// <param name="p1"></param>
+        /// <param name="p2"></param>
+        /// <param name="p3"></param>
+        /// <returns></returns>
+        public static double GetAngle(Point2d p1, Point2d p2, Point2d p3)
+        {
+            var v1 = p1 - p2;
+            var v2 = p3 - p2;
+            var a1 = Math.Atan2(v1.X, v1.Y);
+            var a2 = Math.Atan2(v2.X, v2.Y);
+            return a2 - a1;
         }
 
         /// <inheritdoc/>

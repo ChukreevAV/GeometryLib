@@ -1,9 +1,12 @@
-﻿using GeometryLib.Geometry;
+﻿using System;
+using GeometryLib;
+using GeometryLib.Geometry;
 using GeometryLib.Intersections;
 
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
@@ -19,22 +22,22 @@ namespace Viewer2d
         private Dictionary<HalfEdge, Line> Lines = new();
         //private Dictionary<HalfEdge, Line> TwinLines = new();
 
-        public Line DrawLine(IEventLine line2d, Brush brush)
+        public Line DrawLine(Canvas canvas, IEventLine line2d, Brush brush)
         {
             var line1 = new Line
             {
                 X1 = line2d.Start.X * _scale1,
-                Y1 = _scale1 - line2d.Start.Y * _scale1 * -1,
+                Y1 = 400 - line2d.Start.Y * _scale1,
                 X2 = line2d.End.X * _scale1,
-                Y2 = _scale1 - line2d.End.Y * _scale1 * -1,
+                Y2 = 400 - line2d.End.Y * _scale1,
                 Stroke = brush,
                 StrokeThickness = 1
             };
-            WorkCanvas.Children.Add(line1);
+            canvas.Children.Add(line1);
             return line1;
         }
 
-        private Subdivision GetData()
+        private Subdivision GetData1()
         {
             var list1 = new List<Point2d>
             {
@@ -54,12 +57,12 @@ namespace Viewer2d
 
             var sub1 = new Subdivision();
             var sub2 = new Subdivision();
-            sub1.AddFace(list1);
-            sub2.AddFace(list2);
+            sub1.AddFace("face1", list1);
+            sub2.AddFace("face2", list2);
 
             sub1.Add(sub2);
-            var ed1 = sub1.Edges[2];
-            var ed2 = sub1.Edges[5];
+            var ed1 = sub1.Edges[0];
+            var ed2 = sub1.Edges[7];
 
             var ed3 = sub1.Edges[3];
             var ed4 = sub1.Edges[4];
@@ -72,6 +75,17 @@ namespace Viewer2d
             sub1.Edges.AddRange(eList);
             eList = ed3.Divide(ed4, v2);
             sub1.Edges.AddRange(eList);
+
+            return sub1;
+        }
+
+        private Subdivision GetData2()
+        {
+            var sub1 = new Subdivision();
+            var list1 = GetSampleData.GetRandomConvexHull(9);
+            var list2 = GetSampleData.GetRandomConvexHull(9);
+            sub1.AddFace("face1", list1);
+            sub1.AddFace("face2", list2);
             return sub1;
         }
 
@@ -79,25 +93,55 @@ namespace Viewer2d
         {
             foreach (var edge in sub.Edges)
             {
-                var line = DrawLine(new EdgeLine(edge), Brushes.Green);
+                var line = DrawLine(WorkCanvas, new EdgeLine(edge), Brushes.Green);
                 Lines.Add(edge, line);
                 Lines.Add(edge.Twin, line);
+            }
+        }
+
+        private void TestFace(List<HalfEdge> edges)
+        {
+            var faces = new List<List<Face>>();
+            var ccv = new List<bool>();
+            var lefts = new List<HalfEdge>();
+            var angs = new List<double>();
+            var bList1 = new List<bool>();
+            foreach (var edge in edges)
+            {
+                var fList = edge
+                    .GetLoop()
+                    .Select(e => e.Face)
+                    .Distinct()
+                    .ToList();
+
+                var left = edge.GetLeftEdge();
+                lefts.Add(left);
+                var ang = left.GetAngle() *180 /Math.PI;
+
+                angs.Add(ang);
+                faces.Add(fList);
+                ccv.Add(edge.IsCounterclockwise);
+                bList1.Add(edge.IsOuther());
             }
         }
 
         public SubdivisionView()
         {
             InitializeComponent();
-            var sub1 = GetData();
+            var sub1 = GetData1();
 
             EdgesList.ItemsSource = sub1.Edges;
             var tList = sub1.Edges.Select(e => e.Twin);
             TwinsList.ItemsSource = tList;
-
-            var eList = sub1.Faces.SelectMany(f => f.GetEdges());
+            var loops = sub1.GetLoops();
+            //var eList = sub1.Faces.SelectMany(f => f.GetEdges());
+            var eList = loops.SelectMany(e => e.GetLoop());
             Edges1List.ItemsSource = eList;
 
             DrawSub(sub1);
+
+            TestFace(loops);
+            Faces1List.ItemsSource = loops;
         }
 
         private void SetColor(HalfEdge? edge, Brush brush)
@@ -168,6 +212,36 @@ namespace Viewer2d
             {
                 line.Stroke = Brushes.Green;
             }
+        }
+
+        private void Faces1List_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            foreach (var obj in e.AddedItems)
+            {
+                if (obj is not HalfEdge edge) continue;
+                WorkCanvas2.Children.Clear();
+                var color = edge.IsCounterclockwise ? Brushes.Green : Brushes.Red;
+                DrawLine(WorkCanvas2, new EdgeLine(edge), color);
+                var nextEdge = edge.Next;
+                while (nextEdge != edge)
+                {
+                    if (nextEdge == null) return;
+                    color = nextEdge.IsCounterclockwise ? Brushes.Green : Brushes.Red;
+                    DrawLine(WorkCanvas2, new EdgeLine(nextEdge), color);
+                    nextEdge = nextEdge.Next;
+                }
+            }
+        }
+
+        private void WorkCanvas_MouseMove(object sender, MouseEventArgs e)
+        {
+
+        }
+
+        private void Window_MouseMove(object sender, MouseEventArgs e)
+        {
+            var p = e.GetPosition(WorkCanvas);
+            Coords.Text = $"{p.X/_scale1}; {(p.Y - 400) * -1 / _scale1}";
         }
     }
 }
